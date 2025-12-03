@@ -39,13 +39,30 @@ This MCP server provides four powerful tools for file system interaction:
 npm install
 ```
 
-### 2. Build the Project
+### 2. Configure Claude API Key
+
+Create a `claude-api-key.txt` file in the project root:
+
+```bash
+echo "your-claude-api-key-here" > claude-api-key.txt
+```
+
+Or set environment variable:
+
+```bash
+export ANTHROPIC_API_KEY="your-claude-api-key-here"
+```
+
+⚠️ **Security Note**: The `claude-api-key.txt` file is automatically ignored by
+git to keep your API key secure.
+
+### 3. Build the Project
 
 ```bash
 npm run build
 ```
 
-### 3. Test the Server
+### 4. Test the Server
 
 ```bash
 npm start
