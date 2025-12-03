@@ -1,8 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
 import * as fs from 'fs';
 import * as path from 'path';
+import express from 'express';
+import cors from 'cors';
 
 // Create server instance
 const server = new McpServer({
@@ -13,12 +16,8 @@ const server = new McpServer({
 // Helper function to safely read file contents
 async function readFileContent(filePath: string): Promise<string> {
   try {
-    // Security check - ensure we stay within allowed directories
     const resolvedPath = path.resolve(filePath);
-
-    // Check if file exists and is readable
     await fs.promises.access(resolvedPath, fs.constants.R_OK);
-
     const content = await fs.promises.readFile(resolvedPath, 'utf-8');
     return content;
   } catch (error) {
@@ -96,7 +95,6 @@ async function searchFiles(
           const entryPath = path.join(currentPath, entry.name);
 
           if (entry.isDirectory()) {
-            // Skip hidden directories and node_modules
             if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
               await searchRecursive(entryPath);
             }
@@ -122,7 +120,7 @@ async function searchFiles(
   }
 }
 
-// Register the read_file tool
+// Register all tools
 server.registerTool(
   'read_file',
   {
@@ -158,7 +156,6 @@ server.registerTool(
   }
 );
 
-// Register the list_directory tool
 server.registerTool(
   'list_directory',
   {
@@ -204,7 +201,6 @@ server.registerTool(
   }
 );
 
-// Register the search_files tool
 server.registerTool(
   'search_files',
   {
@@ -247,7 +243,6 @@ server.registerTool(
   }
 );
 
-// Register the analyze_folder tool
 server.registerTool(
   'analyze_folder',
   {
@@ -261,14 +256,11 @@ server.registerTool(
   async ({ path: folderPath }) => {
     try {
       const resolvedPath = path.resolve(folderPath);
-
-      // Get basic folder info
       const stats = await fs.promises.stat(resolvedPath);
       if (!stats.isDirectory()) {
         throw new Error('Path is not a directory');
       }
 
-      // Analyze folder contents recursively
       const analysis = {
         totalFiles: 0,
         totalDirectories: 0,
@@ -294,7 +286,6 @@ server.registerTool(
               analysis.totalDirectories++;
               analysis.structure.push(`${indent}📁 ${entry.name}/`);
 
-              // Skip hidden directories and node_modules for recursive analysis
               if (
                 !entry.name.startsWith('.') &&
                 entry.name !== 'node_modules' &&
@@ -334,7 +325,6 @@ server.registerTool(
 
       await analyzeRecursive(resolvedPath);
 
-      // Format file types summary
       const fileTypesSummary = Array.from(analysis.fileTypes.entries())
         .sort(([, a], [, b]) => b - a)
         .map(([ext, count]) => `${ext}: ${count}`)
@@ -354,7 +344,7 @@ server.registerTool(
         `📁 File Types: ${fileTypesSummary}`,
         ``,
         `🌳 Structure:`,
-        ...analysis.structure.slice(0, 50), // Limit structure output
+        ...analysis.structure.slice(0, 50),
       ];
 
       if (analysis.structure.length > 50) {
@@ -384,11 +374,120 @@ server.registerTool(
   }
 );
 
-// Main function to run the server
+// Main function - support both STDIO and HTTP
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error('File Context MCP Server running on stdio');
+  const mode = process.argv[2] || 'stdio';
+
+  if (mode === 'http') {
+    // HTTP mode for browser access
+    const app = express();
+    app.use(cors());
+    app.use(express.json());
+
+    // Serve a simple test page
+    app.get('/', (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>File Context MCP Server</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            .tool { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+            .endpoint { color: #0066cc; font-family: monospace; }
+            .status { color: #28a745; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>🗂️ File Context MCP Server</h1>
+          <p><strong>Status:</strong> <span class="status">✅ Running on HTTP</span></p>
+          <p><strong>MCP Endpoint:</strong> <span class="endpoint">http://localhost:3000/mcp</span></p>
+          
+          <h2>Available Tools:</h2>
+          <div class="tool">
+            <h3>📖 read_file</h3>
+            <p>Read the contents of any file from the local filesystem</p>
+            <code>Input: {"path": "/path/to/file.txt"}</code>
+          </div>
+          <div class="tool">
+            <h3>📁 list_directory</h3>
+            <p>List all files and directories in a given directory</p>
+            <code>Input: {"path": "/path/to/directory"}</code>
+          </div>
+          <div class="tool">
+            <h3>🔍 search_files</h3>
+            <p>Search for files by name pattern in a directory tree</p>
+            <code>Input: {"rootPath": "/path/to/search", "pattern": "*.js"}</code>
+          </div>
+          <div class="tool">
+            <h3>📊 analyze_folder</h3>
+            <p>Get comprehensive analysis of folder structure, file types, and sizes</p>
+            <code>Input: {"path": "/path/to/analyze"}</code>
+          </div>
+          
+          <h2>Connect to Browser-Based MCP Clients:</h2>
+          <ul>
+            <li><strong><a href="https://claude.ai" target="_blank">Claude.ai</a></strong> - Add as remote MCP server</li>
+            <li><strong><a href="https://modelcontextchat.com" target="_blank">ModelContextChat</a></strong> - Web MCP client</li>
+            <li><strong><a href="https://glama.ai/chat" target="_blank">Glama Chat</a></strong> - MCP-enabled chat</li>
+          </ul>
+          
+          <h2>How to Connect:</h2>
+          <ol>
+            <li>Copy this URL: <code>http://localhost:3000/mcp</code></li>
+            <li>Paste it into your MCP client's server configuration</li>
+            <li>Start asking questions about your files!</li>
+          </ol>
+        </body>
+        </html>
+      `);
+    });
+
+    // Simple JSON-RPC over HTTP handler
+    app.post('/mcp', async (req, res) => {
+      try {
+        // For now, create a simple HTTP transport simulation
+        const transport = new StdioServerTransport();
+        await server.connect(transport);
+
+        res.json({
+          jsonrpc: '2.0',
+          error: {
+            code: -32601,
+            message:
+              'HTTP transport not fully implemented yet. Use STDIO mode for now.',
+          },
+          id: req.body.id || null,
+        });
+      } catch (error) {
+        res.status(500).json({
+          jsonrpc: '2.0',
+          error: {
+            code: -32603,
+            message: 'Internal error',
+          },
+          id: req.body.id || null,
+        });
+      }
+    });
+
+    const port = 3000;
+    app.listen(port, () => {
+      console.log(
+        `🚀 File Context MCP Server running on http://localhost:${port}`
+      );
+      console.log(`📡 MCP endpoint: http://localhost:${port}/mcp`);
+      console.log(`🌐 Open http://localhost:${port} in your browser`);
+      console.log(
+        `\n💡 Note: For full functionality, use STDIO mode with: npm run start:stdio`
+      );
+    });
+  } else {
+    // STDIO mode for local clients
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error('File Context MCP Server running on stdio');
+  }
 }
 
 // Handle graceful shutdown

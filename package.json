@@ -7,18 +7,26 @@
     "file-context-server": "./build/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js",
+    "build": "tsc && chmod 755 build/index.js && chmod 755 build/http-server.js && chmod 755 build/chat-interface.js",
     "dev": "tsc --watch",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "start:http": "node build/http-server.js http",
+    "start:stdio": "node build/index.js",
+    "chat": "node build/chat-interface.js"
   },
   "files": [
     "build"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.24.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.0",
+    "openai": "^6.9.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.0",
+    "@types/express": "^4.17.0",
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3"
   },
