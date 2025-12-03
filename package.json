@@ -14,7 +14,10 @@
     "start:stdio": "node build/index.js",
     "chat": "node build/chat-interface.js",
     "chat:mock": "node build/chat-interface.js --mock",
-    "local-chat": "node build/local-chat.js"
+    "local-chat": "node build/local-chat.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "files": [
     "build"
@@ -28,7 +31,10 @@
   "devDependencies": {
     "@types/cors": "^2.8.0",
     "@types/express": "^4.17.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^24.10.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   },
   "keywords": [

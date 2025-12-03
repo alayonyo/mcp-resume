@@ -19,6 +19,13 @@ anthropic-api-key.txt
 *.key
 coverage/
 .nyc_output/
+
+# Jest test results
+jest-results.json
+.jest-cache/
+
+# Test artifacts (but keep test structure)
+tests/test-data/
 .vscode/settings.json
 .idea/
 *.swp
