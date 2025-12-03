@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "file-context-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/yonatan.ayalon/projects/new_app_1/my-mcp/build/index.js"]
+    }
+  }
+}
