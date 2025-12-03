@@ -1,4 +1,9 @@
-import { readFileContent, listDirectory, searchFiles, analyzeFolder } from '../src/file-operations';
+import {
+  readFileContent,
+  listDirectory,
+  searchFiles,
+  analyzeFolder,
+} from '../src/file-operations';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -62,7 +67,9 @@ describe('Error Handling and Edge Cases', () => {
       expect(result).toBe(specialContent);
 
       const dirResult = await listDirectory(testDataDir);
-      expect(dirResult.some(item => item.name === path.basename(specialFile))).toBe(true);
+      expect(
+        dirResult.some((item) => item.name === path.basename(specialFile))
+      ).toBe(true);
 
       // Clean up
       fs.unlinkSync(specialFile);
@@ -72,14 +79,14 @@ describe('Error Handling and Edge Cases', () => {
   describe('Search Edge Cases', () => {
     it('should handle empty search patterns', async () => {
       const result = await searchFiles(testDataDir, '');
-      
+
       // Empty pattern should match all files (at least the test files we created)
       expect(result.length).toBeGreaterThanOrEqual(0);
     });
 
     it('should handle search patterns with special regex characters', async () => {
       const patterns = ['.', '*', '?', '[', ']', '(', ')', '+', '^', '$'];
-      
+
       for (const pattern of patterns) {
         const result = await searchFiles(testDataDir, pattern);
         // Should not throw an error
@@ -89,9 +96,16 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should handle very long paths', async () => {
       // Create nested directories to test long paths
-      const longPath = path.join(testDataDir, 'very', 'long', 'nested', 'path', 'structure');
+      const longPath = path.join(
+        testDataDir,
+        'very',
+        'long',
+        'nested',
+        'path',
+        'structure'
+      );
       fs.mkdirSync(longPath, { recursive: true });
-      
+
       const testFile = path.join(longPath, 'deep-file.txt');
       fs.writeFileSync(testFile, 'deep content');
 
@@ -141,7 +155,7 @@ describe('Error Handling and Edge Cases', () => {
     it('should handle different path separators', async () => {
       const testPath = ['test-data', 'test-file.txt'].join(path.sep);
       const fullPath = path.join(__dirname, testPath);
-      
+
       const result = await readFileContent(fullPath);
       expect(result).toContain('This is a test file content.');
     });
@@ -150,7 +164,7 @@ describe('Error Handling and Edge Cases', () => {
       // Test case-insensitive search
       const lowerResult = await searchFiles(testDataDir, 'test');
       const upperResult = await searchFiles(testDataDir, 'TEST');
-      
+
       expect(lowerResult).toEqual(upperResult);
     });
   });
@@ -172,7 +186,7 @@ describe('Error Handling and Edge Cases', () => {
       }
 
       const finalMemory = process.memoryUsage();
-      
+
       // Memory should not have grown excessively (allow 50MB increase)
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
       expect(memoryIncrease).toBeLessThan(50 * 1024 * 1024); // 50MB

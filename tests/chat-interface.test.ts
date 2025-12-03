@@ -29,15 +29,17 @@ describe('FileContextChat', () => {
 
     it('should generate mock responses for greetings', async () => {
       const response = await chat.chat('Hello there!');
-      
+
       expect(response).toBeTruthy();
       expect(typeof response).toBe('string');
       expect(response.length).toBeGreaterThan(0);
     });
 
     it('should generate mock responses with file operations', async () => {
-      const response = await chat.chat('What files are in my current directory?');
-      
+      const response = await chat.chat(
+        'What files are in my current directory?'
+      );
+
       expect(response).toBeTruthy();
       expect(typeof response).toBe('string');
       expect(response).toContain('processed');
@@ -46,21 +48,18 @@ describe('FileContextChat', () => {
     it('should detect and execute file operations', async () => {
       // Spy on console.log to check if function execution is logged
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      
+
       await chat.chat('list directory .');
-      
+
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('🔧 Executing: list_directory')
       );
-      
+
       consoleSpy.mockRestore();
     });
 
     it('should handle different question types', async () => {
-      const questions = [
-        'analyze my project',
-        'what is in this folder?'
-      ];
+      const questions = ['analyze my project', 'what is in this folder?'];
 
       for (const question of questions) {
         const response = await chat.chat(question);
@@ -85,11 +84,11 @@ describe('FileContextChat', () => {
 
     it('should detect read file operations', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      
+
       const testCases = [
         'read package.json',
         'show me the content of README.md',
-        'what is in test.txt'
+        'what is in test.txt',
       ];
 
       for (const testCase of testCases) {
@@ -98,17 +97,17 @@ describe('FileContextChat', () => {
           expect.stringContaining('read_file')
         );
       }
-      
+
       consoleSpy.mockRestore();
     });
 
     it('should detect search operations', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      
+
       const testCases = [
         'search for .ts files',
         'find package.json',
-        'search for test'
+        'search for test',
       ];
 
       for (const testCase of testCases) {
@@ -117,7 +116,7 @@ describe('FileContextChat', () => {
           expect.stringContaining('search_files')
         );
       }
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -146,8 +145,10 @@ describe('FileContextChat', () => {
     });
 
     it('should execute file operations and provide responses', async () => {
-      const response = await chat.chat('what files are in the tests directory?');
-      
+      const response = await chat.chat(
+        'what files are in the tests directory?'
+      );
+
       // Response should be generated
       expect(response).toBeTruthy();
       expect(typeof response).toBe('string');
@@ -156,7 +157,7 @@ describe('FileContextChat', () => {
 
     it('should handle file operation errors gracefully', async () => {
       const response = await chat.chat('read /nonexistent/file.txt');
-      
+
       // Should still provide a response even if file operation fails
       expect(response).toBeTruthy();
       expect(typeof response).toBe('string');

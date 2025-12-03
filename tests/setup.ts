@@ -17,25 +17,29 @@ beforeAll(async () => {
   } catch (error) {
     // Ignore cleanup errors
   }
-  
+
   // Create fresh test directory structure
   fs.mkdirSync(testDataDir, { recursive: true });
-  
+
   // Create test files
   fs.writeFileSync(
-    path.join(testDataDir, 'test-file.txt'), 
+    path.join(testDataDir, 'test-file.txt'),
     'This is a test file content.\nLine 2 of test content.'
   );
-  
+
   fs.writeFileSync(
     path.join(testDataDir, 'package.json'),
-    JSON.stringify({
-      name: 'test-package',
-      version: '1.0.0',
-      description: 'Test package for MCP server'
-    }, null, 2)
+    JSON.stringify(
+      {
+        name: 'test-package',
+        version: '1.0.0',
+        description: 'Test package for MCP server',
+      },
+      null,
+      2
+    )
   );
-  
+
   // Create subdirectory
   const subDir = path.join(testDataDir, 'subdir');
   fs.mkdirSync(subDir);
@@ -45,7 +49,7 @@ beforeAll(async () => {
   );
 
   // Wait a bit to ensure file system operations complete
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 });
 
 beforeEach(() => {
@@ -58,7 +62,7 @@ afterAll(async () => {
   try {
     if (fs.existsSync(testDataDir)) {
       // Wait a bit before cleanup
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       fs.rmSync(testDataDir, { recursive: true, force: true });
     }
   } catch (error) {

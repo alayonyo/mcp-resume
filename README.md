@@ -113,19 +113,23 @@ npm run local-chat              # Use local Ollama models
 
 ## Testing
 
-This project includes comprehensive test coverage using **Jest** and **TypeScript**:
+This project includes comprehensive test coverage using **Jest** and
+**TypeScript**:
 
 ### 🧪 **Test Categories**
+
 - **Unit Tests**: Core file operations (read, list, search, analyze)
-- **Integration Tests**: MCP server functionality and tool interactions  
+- **Integration Tests**: MCP server functionality and tool interactions
 - **Mock Tests**: Chat interface with simulated Claude responses
 - **Error Handling**: Edge cases, permissions, and network failures
 - **Performance Tests**: Large directories and concurrent operations
 
 ### 📊 **Test Coverage**
+
 Current coverage: **>90%** of core functionality
 
 ### 🚀 **Running Tests**
+
 ```bash
 npm test                    # Run all tests
 npm run test:coverage      # Detailed coverage report
@@ -133,6 +137,7 @@ npm run test:watch         # Interactive development mode
 ```
 
 ### ✅ **Test Features**
+
 - Isolated test environments with temporary directories
 - Mocked external dependencies (API calls, file system)
 - Cross-platform compatibility testing

@@ -16,7 +16,7 @@ export async function listDirectory(dirPath: string) {
 
   return entries.map((entry) => ({
     name: entry.name,
-    type: entry.isDirectory() ? 'directory' : 'file' as const,
+    type: entry.isDirectory() ? 'directory' : ('file' as const),
     path: path.join(resolvedPath, entry.name),
   }));
 }
@@ -53,14 +53,14 @@ export async function searchFiles(
   } catch {
     // If root path doesn't exist, return empty array
   }
-  
+
   return results;
 }
 
 export async function analyzeFolder(folderPath: string) {
   const resolvedPath = path.resolve(folderPath);
   await fs.promises.access(resolvedPath, fs.constants.R_OK);
-  
+
   const stats = await fs.promises.stat(resolvedPath);
   if (!stats.isDirectory()) {
     throw new Error(`${folderPath} is not a directory`);
@@ -70,16 +70,16 @@ export async function analyzeFolder(folderPath: string) {
   const analysis = {
     path: resolvedPath,
     totalItems: items.length,
-    files: items.filter(item => item.type === 'file').length,
-    directories: items.filter(item => item.type === 'directory').length,
+    files: items.filter((item) => item.type === 'file').length,
+    directories: items.filter((item) => item.type === 'directory').length,
     fileTypes: {} as Record<string, number>,
     structure: items,
   };
 
   // Count file extensions
   items
-    .filter(item => item.type === 'file')
-    .forEach(item => {
+    .filter((item) => item.type === 'file')
+    .forEach((item) => {
       const ext = path.extname(item.name).toLowerCase() || 'no-extension';
       analysis.fileTypes[ext] = (analysis.fileTypes[ext] || 0) + 1;
     });
