@@ -1,7 +1,7 @@
 {
   "name": "file-context-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for reading local folder files and providing context for queries",
+  "description": "MCP server for reading local folder files and providing context for queries with Claude AI integration",
   "type": "module",
   "bin": {
     "file-context-server": "./build/index.js"
@@ -21,8 +21,7 @@
     "@modelcontextprotocol/sdk": "^1.24.2",
     "cors": "^2.8.5",
     "express": "^4.18.0",
-    "openai": "^6.9.1",
-    "zod": "^3.25.76"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.0",
