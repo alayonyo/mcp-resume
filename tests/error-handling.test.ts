@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 describe('Error Handling and Edge Cases', () => {
-  const testDataDir = path.join(__dirname, 'test-data');
+  const testDataDir = path.join(process.cwd(), 'api-resources');
 
   describe('Permission Errors', () => {
     it('should handle permission denied errors gracefully', async () => {

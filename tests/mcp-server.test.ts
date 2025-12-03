@@ -8,7 +8,7 @@ import {
 import * as path from 'path';
 
 describe('MCP Server Integration', () => {
-  const testDataDir = path.join(__dirname, 'test-data');
+  const testDataDir = path.join(process.cwd(), 'api-resources');
 
   describe('MCP Tools', () => {
     it('should provide read_file tool functionality', async () => {

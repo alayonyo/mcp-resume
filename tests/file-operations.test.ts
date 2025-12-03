@@ -7,7 +7,7 @@ import {
 } from '../src/file-operations';
 
 describe('File Operations', () => {
-  const testDataDir = path.join(__dirname, 'test-data');
+  const testDataDir = path.join(process.cwd(), 'api-resources');
 
   describe('readFileContent', () => {
     it('should read file content successfully', async () => {
@@ -64,7 +64,7 @@ describe('File Operations', () => {
 
       expect(items.length).toBeGreaterThan(0);
       const fileNames = items.map((item) => item.name);
-      expect(fileNames).toContain('package.json');
+      expect(fileNames).toContain('yonatan-ayalon-resume.pdf');
     });
   });
 

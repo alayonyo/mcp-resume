@@ -1,0 +1,845 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 7626
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0. g
+42.5196850393700814 799.3703149606299121 Td
+(Yonatan Ayalon) Tj
+ET
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0. g
+42.5196850393700814 786.614409448818833 Td
+(Senior Front-End Software Engineer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 768.1892125984252289 Td
+(yonatanayalon1@gmail.com | Rockville, MD | https://www.linkedin.com/in/yonatan-ayalon-25992014/ |) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 755.4333070866141497 Td
+(https://github.com/alayonyo) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0. g
+42.5196850393700814 725.6695275590550409 Td
+(PROFESSIONAL SUMMARY) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 710.0789763779526993 Td
+(Seasoned Senior Front-End Engineer with over 15 years of experience architecting high-performance, scalable web) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 697.3230708661417339 Td
+(applications and micro frontend systems. Proven track record of designing robust UI architectures, implementing) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 684.5671653543306547 Td
+(enterprise-scale design systems, and driving measurable improvements in performance, accessibility, and user) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 671.8112598425196893 Td
+(experience.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 656.2207086614173477 Td
+(Expert in React, TypeScript, and modern frontend frameworks, with deep experience in design systems, component) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 643.4648031496062686 Td
+(library development, experimentation platforms, and A/B testing infrastructure. Proven track record of implementing) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 630.7088976377951894 Td
+(scalable, accessible solutions that improve user engagement and accelerate development velocity across) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 617.952992125984224 Td
+(engineering teams.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 602.3624409448818824 Td
+(Passionate about building scalable frontend infrastructure, translating complex system requirements into elegant) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 589.6065354330708033 Td
+(user experiences, and leading cross-functional teams to deliver high-quality web applications.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0. g
+42.5196850393700814 571.1813385826771992 Td
+(TECHNICAL SKILLS) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 555.5907874015747439 Td
+(System Design & Architecture:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 542.8348818897636647 Td
+(Micro Frontend Architecture • Scalable UI Systems • Web Performance Optimization • Design Systems •) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 530.0789763779526993 Td
+(Component Libraries • State Management • Application Monitoring • Frontend Infrastructure) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 512.7876377952754865 Td
+(User Experience & Optimization:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 500.0317322834645211 Td
+(A/B Testing • Experimentation Platforms • Conversion Optimization • User Engagement • Analytics) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 487.2758267716534988 Td
+(Implementation • Accessibility \(WCAG\)) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 469.9844881889763428 Td
+(Frontend Technologies:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 457.2285826771653205 Td
+(JavaScript ES6+ • TypeScript • React • Next.js • Redux Toolkit • Webpack • Vite • Tailwind CSS • Chakra UI •) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 444.4726771653542983 Td
+(Storybook) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 427.1813385826771423 Td
+(API & Integration:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 414.42543307086612 Td
+(Node.js • REST APIs • GraphQL • API Design • Microservices) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 397.1340944881889641 Td
+(Testing & Infrastructure:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 384.3781889763779418 Td
+(Jest • React Testing Library • Playwright • Testing Strategy • AWS • Docker • CI/CD) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 367.0868503937007858 Td
+(Security & Best Practices:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 354.3309448818897636 Td
+(XSS Prevention • CSRF Protection • Content Security Policy \(CSP\) • OAuth & JWT • HTTP-Only Cookies • Input) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 341.5750393700787413 Td
+(Sanitization • Secure Coding Practices • OWASP Guidelines) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0. g
+42.5196850393700814 318.6144094488189467 Td
+(CORE COMPETENCIES) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 303.023858267716605 Td
+(Strong Team Player • High Integrity & Work Ethic • Fast Learner • Hands-on Mindset • Excellent Communication •) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 290.2679527559055259 Td
+(Mentorship Skills • User Experience Advocate • Continuous Learning) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0. g
+42.5196850393700814 260.5041732283465308 Td
+(PROFESSIONAL EXPERIENCE) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 244.9136220472440755 Td
+(Senior Software Engineer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 232.15771653543311 Td
+(Vimeo – Online Video Platform | 07/2020 – Present) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 216.5671653543307684 Td
+(• Architected and maintained React \(TypeScript\) + Redux infrastructure for the core application serving millions of users.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 203.8112598425196893 Td
+(• Designed and implemented micro frontend architecture enabling independent team deployments and scalability.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 191.0553543307087239 Td
+(• Built comprehensive performance monitoring and logging systems, improving application load times by 40%.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 178.2994488188976447 Td
+(• Led A/B testing initiatives and conversion optimization strategies, driving measurable improvements in user engagement and) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 165.5435433070866793 Td
+(retention.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 152.7876377952756002 Td
+(• Constructed robust E2E testing infrastructure using Selenium & WebDriverIO, integrated with BrowserStack.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 140.0317322834645211 Td
+(• Led design system implementation across multiple product teams, ensuring UI consistency and developer efficiency.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 127.2758267716535556 Td
+(• Collaborated cross-functionally with product, design, and backend teams to ensure performance and accessibility.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 106.0159842519684616 Td
+(Lead Front-End Developer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 93.2600787401574962 Td
+(Credifi – FinTech, Commercial Real Estate Analytics | 01/2019 – 05/2020) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 77.6695275590551546 Td
+(• Sole front-end developer responsible for the UX/UI of the flagship FinTech customer application.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 64.9136220472440755 Td
+(• Refactored and maintained Angular \(v1 and v2+\) applications in TypeScript, significantly improving performance.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 5461
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 799.3703149606299121 Td
+(• Directed UI/UX strategy and ensured design system consistency across views.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 778.1104724409448181 Td
+(Front-End Team Lead) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 765.3545669291338527 Td
+(Herolo – Tailoring Front-End Solutions | 04/2017 – 12/2018) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 749.7640157480315111 Td
+(• Guided a team of front-end engineers in developing Angular-based applications tailored to customer specifications.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 737.0081102362204319 Td
+(• Managed projects end-to-end: client scoping, UX collaboration, architecture, development, and delivery.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 724.2522047244094665 Td
+(• Promoted test-driven development utilizing Karma and Jasmine.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 702.9923622047243725 Td
+(Senior Software Engineer & Scrum Master) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 690.2364566929134071 Td
+(Optimal+ – Electronics Analytics | 10/2015 – 03/2017) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 674.6459055118109518 Td
+(• Spearheaded the Angular 2 migration and TypeScript implementation for new applications.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 661.8899999999999864 Td
+(• Shared front-end expertise within the team; introduced unit testing best practices.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 649.1340944881889072 Td
+(• Served as Scrum Master, effectively facilitating Agile development cycles.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 627.8742519685039269 Td
+(Senior Software Engineer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 615.1183464566928478 Td
+(Perion \(Ex. Conduit\) – Search Solutions | 06/2011 – 09/2015) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 599.5277952755905062 Td
+(• Provided technical leadership for the SearchApps team, developing multiple high-scale web applications.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 586.7718897637794271 Td
+(• Created web UIs and extensions for millions of daily users, implementing A/B testing frameworks that significantly improved) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 574.0159842519684616 Td
+(conversion rates and user engagement.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 561.2600787401574962 Td
+(• Developed responsive layouts, browser extensions, and image portal experiences focused on user experience optimization.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 548.5041732283464171 Td
+(• Delivered internal front-end training courses on MVC4, JavaScript best practices, and scalable design patterns.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 535.748267716535338 Td
+(• Full-stack experience: .NET MVC4/5, WebAPI, MySQL/MSSQL, CDN optimization, Amazon EC2 deployment.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 514.4884251968503577 Td
+(Front-End Developer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 501.7325196850393354 Td
+(Convertonet – Online Marketing | 03/2010 – 06/2011) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 486.1419685039369369 Td
+(• Maintained and enhanced Flash CMS-based portals.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 473.3860629921259147 Td
+(• Delivered pixel-perfect landing pages and templates for various marketing campaigns.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 460.6301574803148924 Td
+(• Advanced the use of jQuery and ensured cross-browser compatibility.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 439.3703149606298552 Td
+(Full-Stack Developer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 426.614409448818833 Td
+(Walla! – Major Israeli Web Portal | 12/2007 – 02/2010) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 411.0238582677164914 Td
+(• Developed cross-browser dynamic UI components for the new portal version.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 398.2679527559054691 Td
+(• Utilized internal scripting language \(TScript\), PHP, and MySQL for development.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 385.5120472440944468 Td
+(• Optimized database performance through indexing and refined queries.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0. g
+42.5196850393700814 364.2522047244094097 Td
+(Web Developer) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42.5196850393700814 351.4962992125983874 Td
+(Excelang \(Ex. Octava\) – Startup | 10/2006 – 10/2007) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 335.9057480314959889 Td
+(• Delivered dynamic UI solutions from PSDs utilizing HTML/CSS, Photoshop, and Freehand.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 323.1498425196849666 Td
+(• Engineered Ruby on Rails web applications integrated with external PHP systems.) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+51.0236220472441033 310.3939370078740012 Td
+(• Managed company servers, implementing custom permissions and purchasing modules.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 3.0.4)
+/Title (Yonatan Ayalon - Senior Front-End Software Engineer Resume)
+/Subject (Frontend Engineer Resume - React, TypeScript, JavaScript Expert)
+/Author (Yonatan Ayalon)
+/Keywords (Senior Software Engineer, Frontend Developer, React, TypeScript, JavaScript, Next.js, Redux, Web Development, UI/UX, A/B Testing, Micro Frontend, Design Systems)
+/Creator (Yonatan Ayalon Professional Resume)
+/CreationDate (D:20251126122953-05'00')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000013480 00000 n 
+0000015305 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000007830 00000 n 
+0000007967 00000 n 
+0000013543 00000 n 
+0000013668 00000 n 
+0000013798 00000 n 
+0000013931 00000 n 
+0000014069 00000 n 
+0000014193 00000 n 
+0000014322 00000 n 
+0000014454 00000 n 
+0000014590 00000 n 
+0000014718 00000 n 
+0000014845 00000 n 
+0000014974 00000 n 
+0000015107 00000 n 
+0000015209 00000 n 
+0000015555 00000 n 
+0000016028 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <FAC46773BF45CDC6B70EF39CC187E94B> <FAC46773BF45CDC6B70EF39CC187E94B> ]
+>>
+startxref
+16132
+%%EOF

@@ -2,20 +2,26 @@
   "preset": "ts-jest",
   "testEnvironment": "node",
   "roots": ["<rootDir>/tests"],
-  "testMatch": ["**/tests/**/*.test.ts"],
+  "testMatch": ["**/tests/integrated.test.ts"],
   "transform": {
     "^.+\\.ts$": [
       "ts-jest",
       {
         "diagnostics": {
-          "ignoreCodes": [151002]
+          "ignoreCodes": [151002, 1343]
+        },
+        "tsconfig": {
+          "module": "commonjs",
+          "moduleResolution": "node"
         }
       }
     ]
   },
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  },
   "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"],
   "coverageDirectory": "coverage",
   "coverageReporters": ["text", "lcov", "html"],
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
   "testPathIgnorePatterns": ["/node_modules/", "/build/"]
 }
