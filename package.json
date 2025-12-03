@@ -13,6 +13,7 @@
     "start:http": "node build/http-server.js http",
     "start:stdio": "node build/index.js",
     "chat": "node build/chat-interface.js",
+    "chat:mock": "node build/chat-interface.js --mock",
     "local-chat": "node build/local-chat.js"
   },
   "files": [

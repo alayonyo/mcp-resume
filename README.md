@@ -68,6 +68,36 @@ npm run build
 npm start
 ```
 
+## Chat Interface Options
+
+This project includes multiple ways to interact with your files using AI:
+
+### 🌐 **Real Claude API** (requires network & API key)
+```bash
+npm run chat                    # Interactive chat with Claude
+npm run chat -- --help         # Show usage options
+```
+
+### 🎭 **Mock Mode** (no network required)
+Perfect for corporate environments or testing:
+```bash
+npm run chat:mock               # Use built-in mock responses  
+npm run chat -- --mock         # Alternative syntax
+npm run chat -- -m             # Short form
+```
+
+**Mock mode features:**
+- ✅ Full file system access (read, list, search)
+- ✅ Realistic AI-like responses
+- ✅ No network calls or API keys needed
+- ✅ Perfect for demos and corporate networks
+- ✅ Automatic fallback when API fails
+
+### 🦙 **Local AI** (Ollama integration)
+```bash
+npm run local-chat              # Use local Ollama models
+```
+
 ## Usage with MCP Clients
 
 ### Claude Desktop Configuration
