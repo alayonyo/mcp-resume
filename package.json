@@ -7,10 +7,13 @@
     "file-context-server": "./build/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js && chmod 755 build/http-server.js && chmod 755 build/chat-interface.js && chmod 755 build/local-chat.js",
+    "build": "npm run build:server && npm run build:ui",
+    "build:server": "tsc && chmod 755 build/index.js && chmod 755 build/http-server.js && chmod 755 build/chat-interface.js && chmod 755 build/local-chat.js",
+    "build:ui": "mkdir -p build/public && cp -r ui/* build/public/",
     "dev": "tsc --watch",
-    "start": "node build/index.js",
-    "start:http": "node build/http-server.js http",
+    "start": "NODE_ENV=production node build/index.js",
+    "start:http": "NODE_ENV=development node build/http-server.js http",
+    "start:http:prod": "NODE_ENV=production node build/http-server.js http",
     "start:stdio": "node build/index.js",
     "chat": "node build/chat-interface.js",
     "chat:mock": "node build/chat-interface.js --mock",

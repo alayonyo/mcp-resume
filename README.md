@@ -77,15 +77,45 @@ npm run test:watch         # Run tests in watch mode
 
 ### 5. Test the Server
 
+#### Interactive Web UI (Recommended)
+
+```bash
+npm run start:http
+```
+
+Then open http://localhost:3000 in your browser for a full interactive
+interface!
+
+#### Command Line Interface
+
 ```bash
 npm start
 ```
 
-## Chat Interface Options
+## Interface Options
 
-This project includes multiple ways to interact with your files using AI:
+This project includes multiple ways to interact with your files:
 
-### 🌐 **Real Claude API** (requires network & API key)
+### 🎨 **Interactive Web UI** (New!)
+
+```bash
+npm run start:http
+```
+
+Open http://localhost:3000 in your browser for a modern, interactive interface
+featuring:
+
+- **🗂️ File Operations Panel**: Direct access to read, list, search, and analyze
+  tools
+- **💬 AI Chat Assistant**: Natural language file queries with intelligent
+  command detection
+- **📊 Real-time Results**: Live display of file operations and responses
+- **📱 Responsive Design**: Works on desktop, tablet, and mobile devices
+- **⌨️ Keyboard Shortcuts**: Ctrl/Cmd+K to focus chat, Enter to send messages
+
+### 💬 **Chat Interface Options**
+
+### 🌐 **Terminal Chat Interface** (requires network & API key)
 
 ```bash
 npm run chat                    # Interactive chat with Claude
@@ -184,6 +214,25 @@ The project includes a `.vscode/mcp.json` file for VS Code MCP integration:
 ```
 
 ## Example Use Cases
+
+### 🎨 **Web UI Examples**
+
+The interactive web interface supports both direct tool usage and natural
+language:
+
+**Direct Operations:**
+
+- Use the file operation panels to read, list, search, and analyze files
+- Real-time results display with syntax highlighting
+- Chat assistant for natural language queries
+
+**Natural Language Chat:**
+
+- "What files are in the current directory?"
+- "Read the package.json file"
+- "Search for all .ts files in the src folder"
+- "Analyze this project structure"
+- "Show me the contents of README.md"
 
 ### 📖 Reading Project Files
 
