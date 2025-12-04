@@ -429,321 +429,317 @@ server.registerTool(
   }
 );
 
-// Main function - support both STDIO and HTTP
-async function main() {
-  const mode = process.argv[2] || 'stdio';
+// Create Express app (separate from server startup for Vercel compatibility)
+function createExpressApp() {
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
 
-  if (mode === 'http') {
-    // HTTP mode for browser access
-    const app = express();
-    app.use(cors());
-    app.use(express.json());
+  // Serve static UI files
+  app.use(express.static(path.join(process.cwd(), 'build', 'public')));
 
-    // Serve static UI files
-    app.use(express.static(path.join(process.cwd(), 'build', 'public')));
+  // Serve the main UI
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'build', 'public', 'index.html'));
+  });
 
-    // Serve the main UI
-    app.get('/', (req, res) => {
-      res.sendFile(path.join(process.cwd(), 'build', 'public', 'index.html'));
+  // API status endpoint
+  app.get('/api/status', (req, res) => {
+    res.json({
+      status: 'ok',
+      server: 'File Context MCP Server',
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
     });
+  });
 
-    // API status endpoint
-    app.get('/api/status', (req, res) => {
-      res.json({
-        status: 'ok',
-        server: 'File Context MCP Server',
-        version: '1.0.0',
-        timestamp: new Date().toISOString(),
-      });
-    });
+  // API tools endpoint
+  app.post('/api/tools', async (req, res) => {
+    try {
+      const { tool, params } = req.body;
 
-    // API tools endpoint
-    app.post('/api/tools', async (req, res) => {
-      try {
-        const { tool, params } = req.body;
-
-        if (!tool || !params) {
-          return res.status(400).json({
-            error: 'Missing required fields: tool and params',
-          });
-        }
-
-        let result;
-
-        switch (tool) {
-          case 'read_file':
-            if (!params.path) {
-              return res.status(400).json({ error: 'Missing path parameter' });
-            }
-
-            // Restrict to api-resources folder only
-            let restrictedFilePath = params.path;
-            if (!restrictedFilePath.startsWith('api-resources/')) {
-              restrictedFilePath = `api-resources/${restrictedFilePath}`;
-            }
-
-            result = await readFileContent(restrictedFilePath);
-            break;
-
-          case 'list_directory':
-            if (!params.path) {
-              return res.status(400).json({ error: 'Missing path parameter' });
-            }
-
-            // Restrict to api-resources folder only
-            let restrictedPath = params.path;
-            if (
-              restrictedPath === '.' ||
-              restrictedPath === '' ||
-              restrictedPath === '/'
-            ) {
-              restrictedPath = 'api-resources';
-            } else if (
-              !restrictedPath.startsWith('api-resources/') &&
-              restrictedPath !== 'api-resources'
-            ) {
-              restrictedPath = `api-resources/${restrictedPath}`;
-            }
-
-            const items = await listDirectory(restrictedPath);
-            result = items
-              .map(
-                (item) =>
-                  `${item.type === 'directory' ? '📁' : '📄'} ${item.name}${
-                    item.size !== undefined ? ` (${item.size} bytes)` : ''
-                  }`
-              )
-              .join('\n');
-            break;
-
-          case 'search_files':
-            if (!params.rootPath || !params.pattern) {
-              return res.status(400).json({
-                error: 'Missing rootPath or pattern parameter',
-              });
-            }
-
-            // Restrict to api-resources folder only
-            let restrictedRootPath = params.rootPath;
-            if (
-              restrictedRootPath === '.' ||
-              restrictedRootPath === '' ||
-              restrictedRootPath === '/'
-            ) {
-              restrictedRootPath = 'api-resources';
-            } else if (
-              !restrictedRootPath.startsWith('api-resources/') &&
-              restrictedRootPath !== 'api-resources'
-            ) {
-              restrictedRootPath = `api-resources/${restrictedRootPath}`;
-            }
-
-            const files = await searchFiles(restrictedRootPath, params.pattern);
-            result =
-              files.length > 0
-                ? files.map((f) => `📄 ${f}`).join('\n')
-                : `No files found matching "${params.pattern}" in ${restrictedRootPath}`;
-            break;
-
-          case 'analyze_folder':
-            if (!params.path) {
-              return res.status(400).json({ error: 'Missing path parameter' });
-            }
-
-            // Restrict to api-resources folder only
-            let restrictedAnalyzePath = params.path;
-            if (
-              restrictedAnalyzePath === '.' ||
-              restrictedAnalyzePath === '' ||
-              restrictedAnalyzePath === '/'
-            ) {
-              restrictedAnalyzePath = 'api-resources';
-            } else if (
-              !restrictedAnalyzePath.startsWith('api-resources/') &&
-              restrictedAnalyzePath !== 'api-resources'
-            ) {
-              restrictedAnalyzePath = `api-resources/${restrictedAnalyzePath}`;
-            }
-
-            // Reuse the analyze_folder logic from the MCP tool
-            const resolvedPath = path.resolve(restrictedAnalyzePath);
-            const stats = await fs.promises.stat(resolvedPath);
-            if (!stats.isDirectory()) {
-              throw new Error('Path is not a directory');
-            }
-
-            const analysis = {
-              totalFiles: 0,
-              totalDirectories: 0,
-              fileTypes: new Map<string, number>(),
-              totalSize: 0,
-              structure: [] as string[],
-            };
-
-            async function analyzeRecursive(
-              currentPath: string,
-              depth = 0
-            ): Promise<void> {
-              try {
-                const entries = await fs.promises.readdir(currentPath, {
-                  withFileTypes: true,
-                });
-                const indent = '  '.repeat(depth);
-
-                for (const entry of entries) {
-                  const entryPath = path.join(currentPath, entry.name);
-
-                  if (entry.isDirectory()) {
-                    analysis.totalDirectories++;
-                    analysis.structure.push(`${indent}📁 ${entry.name}/`);
-
-                    if (
-                      !entry.name.startsWith('.') &&
-                      entry.name !== 'node_modules' &&
-                      depth < 3
-                    ) {
-                      await analyzeRecursive(entryPath, depth + 1);
-                    }
-                  } else if (entry.isFile()) {
-                    analysis.totalFiles++;
-
-                    try {
-                      const fileStats = await fs.promises.stat(entryPath);
-                      analysis.totalSize += fileStats.size;
-
-                      const ext = path.extname(entry.name).toLowerCase();
-                      const extension = ext || '(no extension)';
-                      analysis.fileTypes.set(
-                        extension,
-                        (analysis.fileTypes.get(extension) || 0) + 1
-                      );
-
-                      const sizeKB = Math.round(fileStats.size / 1024);
-                      analysis.structure.push(
-                        `${indent}📄 ${entry.name} (${sizeKB} KB)`
-                      );
-                    } catch {
-                      analysis.structure.push(
-                        `${indent}📄 ${entry.name} (size unknown)`
-                      );
-                    }
-                  }
-                }
-              } catch {
-                // Skip directories we can't read
-              }
-            }
-
-            await analyzeRecursive(resolvedPath);
-
-            const fileTypesSummary = Array.from(analysis.fileTypes.entries())
-              .sort(([, a], [, b]) => b - a)
-              .map(([ext, count]) => `${ext}: ${count}`)
-              .join(', ');
-
-            const sizeMB =
-              Math.round((analysis.totalSize / (1024 * 1024)) * 100) / 100;
-
-            const summary = [
-              `Folder Analysis: ${params.path}`,
-              ``,
-              `📊 Summary:`,
-              `• Total Files: ${analysis.totalFiles}`,
-              `• Total Directories: ${analysis.totalDirectories}`,
-              `• Total Size: ${sizeMB} MB`,
-              ``,
-              `📁 File Types: ${fileTypesSummary}`,
-              ``,
-              `🌳 Structure:`,
-              ...analysis.structure.slice(0, 50),
-            ];
-
-            if (analysis.structure.length > 50) {
-              summary.push(
-                `... and ${analysis.structure.length - 50} more items`
-              );
-            }
-
-            result = summary.join('\n');
-            break;
-
-          default:
-            return res.status(400).json({
-              error: `Unknown tool: ${tool}`,
-            });
-        }
-
-        res.json({ result });
-      } catch (error) {
-        console.error('API Error:', error);
-        res.status(500).json({
-          error: error instanceof Error ? error.message : 'Unknown error',
+      if (!tool || !params) {
+        return res.status(400).json({
+          error: 'Missing required fields: tool and params',
         });
       }
-    });
 
-    // Claude chat endpoint
-    app.post('/api/chat', async (req, res) => {
-      try {
-        const { message, context } = req.body;
+      let result;
 
-        if (!message) {
-          return res.status(400).json({
-            error: 'Missing message parameter',
-          });
-        }
+      switch (tool) {
+        case 'read_file':
+          if (!params.path) {
+            return res.status(400).json({ error: 'Missing path parameter' });
+          }
 
-        // Load API key
-        const apiKey = loadClaudeApiKey();
-        if (!apiKey) {
-          return res.status(400).json({
-            error:
-              'Claude API key not found. Please set ANTHROPIC_API_KEY environment variable in your .env.local file.',
-          });
-        }
+          // Restrict to api-resources folder only
+          let restrictedFilePath = params.path;
+          if (!restrictedFilePath.startsWith('api-resources/')) {
+            restrictedFilePath = `api-resources/${restrictedFilePath}`;
+          }
 
-        // Automatically load all files from api-resources as context
-        let contextMessage = message;
-        try {
-          const apiResourcesPath = path.resolve('api-resources');
-          const files = await fs.promises.readdir(apiResourcesPath);
-          const fileContents: string[] = [];
+          result = await readFileContent(restrictedFilePath);
+          break;
 
-          for (const file of files) {
-            if (file.startsWith('.')) continue; // Skip hidden files
+        case 'list_directory':
+          if (!params.path) {
+            return res.status(400).json({ error: 'Missing path parameter' });
+          }
 
-            const filePath = path.join(apiResourcesPath, file);
-            const stats = await fs.promises.stat(filePath);
+          // Restrict to api-resources folder only
+          let restrictedPath = params.path;
+          if (
+            restrictedPath === '.' ||
+            restrictedPath === '' ||
+            restrictedPath === '/'
+          ) {
+            restrictedPath = 'api-resources';
+          } else if (
+            !restrictedPath.startsWith('api-resources/') &&
+            restrictedPath !== 'api-resources'
+          ) {
+            restrictedPath = `api-resources/${restrictedPath}`;
+          }
 
-            if (stats.isFile()) {
-              try {
-                const content = await readFileContent(filePath);
-                fileContents.push(`=== File: ${file} ===\n${content}\n`);
-              } catch (error) {
-                console.log(`Could not read ${file}:`, error);
+          const items = await listDirectory(restrictedPath);
+          result = items
+            .map(
+              (item) =>
+                `${item.type === 'directory' ? '📁' : '📄'} ${item.name}${
+                  item.size !== undefined ? ` (${item.size} bytes)` : ''
+                }`
+            )
+            .join('\n');
+          break;
+
+        case 'search_files':
+          if (!params.rootPath || !params.pattern) {
+            return res.status(400).json({
+              error: 'Missing rootPath or pattern parameter',
+            });
+          }
+
+          // Restrict to api-resources folder only
+          let restrictedRootPath = params.rootPath;
+          if (
+            restrictedRootPath === '.' ||
+            restrictedRootPath === '' ||
+            restrictedRootPath === '/'
+          ) {
+            restrictedRootPath = 'api-resources';
+          } else if (
+            !restrictedRootPath.startsWith('api-resources/') &&
+            restrictedRootPath !== 'api-resources'
+          ) {
+            restrictedRootPath = `api-resources/${restrictedRootPath}`;
+          }
+
+          const files = await searchFiles(restrictedRootPath, params.pattern);
+          result =
+            files.length > 0
+              ? files.map((f) => `📄 ${f}`).join('\n')
+              : `No files found matching "${params.pattern}" in ${restrictedRootPath}`;
+          break;
+
+        case 'analyze_folder':
+          if (!params.path) {
+            return res.status(400).json({ error: 'Missing path parameter' });
+          }
+
+          // Restrict to api-resources folder only
+          let restrictedAnalyzePath = params.path;
+          if (
+            restrictedAnalyzePath === '.' ||
+            restrictedAnalyzePath === '' ||
+            restrictedAnalyzePath === '/'
+          ) {
+            restrictedAnalyzePath = 'api-resources';
+          } else if (
+            !restrictedAnalyzePath.startsWith('api-resources/') &&
+            restrictedAnalyzePath !== 'api-resources'
+          ) {
+            restrictedAnalyzePath = `api-resources/${restrictedAnalyzePath}`;
+          }
+
+          // Reuse the analyze_folder logic from the MCP tool
+          const resolvedPath = path.resolve(restrictedAnalyzePath);
+          const stats = await fs.promises.stat(resolvedPath);
+          if (!stats.isDirectory()) {
+            throw new Error('Path is not a directory');
+          }
+
+          const analysis = {
+            totalFiles: 0,
+            totalDirectories: 0,
+            fileTypes: new Map<string, number>(),
+            totalSize: 0,
+            structure: [] as string[],
+          };
+
+          async function analyzeRecursive(
+            currentPath: string,
+            depth = 0
+          ): Promise<void> {
+            try {
+              const entries = await fs.promises.readdir(currentPath, {
+                withFileTypes: true,
+              });
+              const indent = '  '.repeat(depth);
+
+              for (const entry of entries) {
+                const entryPath = path.join(currentPath, entry.name);
+
+                if (entry.isDirectory()) {
+                  analysis.totalDirectories++;
+                  analysis.structure.push(`${indent}📁 ${entry.name}/`);
+
+                  if (
+                    !entry.name.startsWith('.') &&
+                    entry.name !== 'node_modules' &&
+                    depth < 3
+                  ) {
+                    await analyzeRecursive(entryPath, depth + 1);
+                  }
+                } else if (entry.isFile()) {
+                  analysis.totalFiles++;
+
+                  try {
+                    const fileStats = await fs.promises.stat(entryPath);
+                    analysis.totalSize += fileStats.size;
+
+                    const ext = path.extname(entry.name).toLowerCase();
+                    const extension = ext || '(no extension)';
+                    analysis.fileTypes.set(
+                      extension,
+                      (analysis.fileTypes.get(extension) || 0) + 1
+                    );
+
+                    const sizeKB = Math.round(fileStats.size / 1024);
+                    analysis.structure.push(
+                      `${indent}📄 ${entry.name} (${sizeKB} KB)`
+                    );
+                  } catch {
+                    analysis.structure.push(
+                      `${indent}📄 ${entry.name} (size unknown)`
+                    );
+                  }
+                }
               }
+            } catch {
+              // Skip directories we can't read
             }
           }
 
-          if (fileContents.length > 0) {
-            contextMessage = `${message}\n\nAvailable documents and resources:\n${fileContents.join(
-              '\n'
-            )}`;
+          await analyzeRecursive(resolvedPath);
+
+          const fileTypesSummary = Array.from(analysis.fileTypes.entries())
+            .sort(([, a], [, b]) => b - a)
+            .map(([ext, count]) => `${ext}: ${count}`)
+            .join(', ');
+
+          const sizeMB =
+            Math.round((analysis.totalSize / (1024 * 1024)) * 100) / 100;
+
+          const summary = [
+            `Folder Analysis: ${params.path}`,
+            ``,
+            `📊 Summary:`,
+            `• Total Files: ${analysis.totalFiles}`,
+            `• Total Directories: ${analysis.totalDirectories}`,
+            `• Total Size: ${sizeMB} MB`,
+            ``,
+            `📁 File Types: ${fileTypesSummary}`,
+            ``,
+            `🌳 Structure:`,
+            ...analysis.structure.slice(0, 50),
+          ];
+
+          if (analysis.structure.length > 50) {
+            summary.push(
+              `... and ${analysis.structure.length - 50} more items`
+            );
           }
-        } catch (error) {
-          console.log('Could not load api-resources context:', error);
+
+          result = summary.join('\n');
+          break;
+
+        default:
+          return res.status(400).json({
+            error: `Unknown tool: ${tool}`,
+          });
+      }
+
+      res.json({ result });
+    } catch (error) {
+      console.error('API Error:', error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  });
+
+  // Claude chat endpoint
+  app.post('/api/chat', async (req, res) => {
+    try {
+      const { message, context } = req.body;
+
+      if (!message) {
+        return res.status(400).json({
+          error: 'Missing message parameter',
+        });
+      }
+
+      // Load API key
+      const apiKey = loadClaudeApiKey();
+      if (!apiKey) {
+        return res.status(400).json({
+          error:
+            'Claude API key not found. Please set ANTHROPIC_API_KEY environment variable in your .env.local file.',
+        });
+      }
+
+      // Automatically load all files from api-resources as context
+      let contextMessage = message;
+      try {
+        const apiResourcesPath = path.resolve('api-resources');
+        const files = await fs.promises.readdir(apiResourcesPath);
+        const fileContents: string[] = [];
+
+        for (const file of files) {
+          if (file.startsWith('.')) continue; // Skip hidden files
+
+          const filePath = path.join(apiResourcesPath, file);
+          const stats = await fs.promises.stat(filePath);
+
+          if (stats.isFile()) {
+            try {
+              const content = await readFileContent(filePath);
+              fileContents.push(`=== File: ${file} ===\n${content}\n`);
+            } catch (error) {
+              console.log(`Could not read ${file}:`, error);
+            }
+          }
         }
 
-        // Call Claude API with SSL handling using manual HTTPS request
-        let response;
-        try {
-          const requestBody = JSON.stringify({
-            model: 'claude-3-haiku-20240307',
-            max_tokens: 60,
-            messages: [
-              {
-                role: 'user',
-                content: `You are an AI assistant for Yonatan Ayalon's professional profile. 
+        if (fileContents.length > 0) {
+          contextMessage = `${message}\n\nAvailable documents and resources:\n${fileContents.join(
+            '\n'
+          )}`;
+        }
+      } catch (error) {
+        console.log('Could not load api-resources context:', error);
+      }
+
+      // Call Claude API with SSL handling using manual HTTPS request
+      let response;
+      try {
+        const requestBody = JSON.stringify({
+          model: 'claude-3-haiku-20240307',
+          max_tokens: 60,
+          messages: [
+            {
+              role: 'user',
+              content: `You are an AI assistant for Yonatan Ayalon's professional profile. 
 
 STRICT RULES:
 - Maximum 150 characters for main response
@@ -753,193 +749,207 @@ STRICT RULES:
 Format: "[Key point]. More details? Ask: [specific areas]"
 
 ${contextMessage}`,
-              },
-            ],
-          });
+            },
+          ],
+        });
 
-          // Use native https module for better SSL control
-          const responsePromise = new Promise<any>((resolve, reject) => {
-            const options = {
-              hostname: 'api.anthropic.com',
-              port: 443,
-              path: '/v1/messages',
-              method: 'POST',
-              headers: {
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
-                'content-length': Buffer.byteLength(requestBody),
-              },
-              agent: httpsAgent,
-            };
+        // Use native https module for better SSL control
+        const responsePromise = new Promise<any>((resolve, reject) => {
+          const options = {
+            hostname: 'api.anthropic.com',
+            port: 443,
+            path: '/v1/messages',
+            method: 'POST',
+            headers: {
+              'x-api-key': apiKey,
+              'anthropic-version': '2023-06-01',
+              'content-type': 'application/json',
+              'content-length': Buffer.byteLength(requestBody),
+            },
+            agent: httpsAgent,
+          };
 
-            const req = https.request(options, (res) => {
-              let data = '';
-              res.on('data', (chunk) => {
-                data += chunk;
+          const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk;
+            });
+            res.on('end', () => {
+              const statusCode = res.statusCode || 500;
+              resolve({
+                status: statusCode,
+                statusText: res.statusMessage || 'Unknown',
+                ok: statusCode >= 200 && statusCode < 300,
+                json: () => Promise.resolve(JSON.parse(data)),
+                text: () => Promise.resolve(data),
               });
-              res.on('end', () => {
-                const statusCode = res.statusCode || 500;
-                resolve({
-                  status: statusCode,
-                  statusText: res.statusMessage || 'Unknown',
-                  ok: statusCode >= 200 && statusCode < 300,
-                  json: () => Promise.resolve(JSON.parse(data)),
-                  text: () => Promise.resolve(data),
-                });
-              });
             });
-
-            req.on('error', (error) => {
-              reject(error);
-            });
-
-            req.write(requestBody);
-            req.end();
           });
 
-          response = await responsePromise;
-        } catch (fetchError: any) {
-          // Log the exact error for debugging
-          console.error('❌ Claude API fetch error:', {
-            message: fetchError.message,
-            code: fetchError.code,
-            cause: fetchError.cause,
-            stack: fetchError.stack,
-            name: fetchError.name,
+          req.on('error', (error) => {
+            reject(error);
           });
 
-          // Handle SSL certificate errors by providing mock response
-          if (
-            fetchError.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' ||
-            fetchError.cause?.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' ||
-            fetchError.message?.includes('certificate') ||
-            fetchError.message?.includes('SSL') ||
-            fetchError.message?.includes('TLS') ||
-            fetchError.code === 'ECONNREFUSED'
-          ) {
-            console.warn(
-              '⚠️  Network/SSL issue detected. Providing mock response. NODE_TLS_REJECT_UNAUTHORIZED is set to:',
-              process.env.NODE_TLS_REJECT_UNAUTHORIZED
-            );
+          req.write(requestBody);
+          req.end();
+        });
 
-            // Generate intelligent mock response based on context
-            let mockResponse =
-              "I can see you're working with a file system project. ";
+        response = await responsePromise;
+      } catch (fetchError: any) {
+        // Log the exact error for debugging
+        console.error('❌ Claude API fetch error:', {
+          message: fetchError.message,
+          code: fetchError.code,
+          cause: fetchError.cause,
+          stack: fetchError.stack,
+          name: fetchError.name,
+        });
 
-            if (context) {
-              mockResponse += `Based on the directory listing, I can see files like ${
-                context.includes('package.json')
-                  ? 'package.json (Node.js project), '
-                  : ''
-              }${context.includes('README.md') ? 'README.md, ' : ''}${
-                context.includes('.git') ? 'and a Git repository. ' : ''
-              }This appears to be a well-organized development project.`;
-            } else {
-              if (message.toLowerCase().includes('directory')) {
-                mockResponse +=
-                  "To help you explore your files, you can use commands like 'list current directory' or ask about specific files.";
-              } else {
-                mockResponse +=
-                  "I'm here to help you explore and understand your files. What would you like to know about your project?";
-              }
-            }
-
-            mockResponse +=
-              '\n\n⚠️ Note: This is a mock response due to SSL certificate issues. To get real Claude responses, please check your network configuration.';
-
-            return res.json({
-              response: mockResponse,
-              usage: {
-                promptTokens: 50,
-                completionTokens: 100,
-                totalTokens: 150,
-              },
-            });
-          }
-          throw fetchError;
-        }
-
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => 'Unknown error');
-          throw new Error(
-            `Claude API error: ${response.status} ${response.statusText}. Response: ${errorText}`
+        // Handle SSL certificate errors by providing mock response
+        if (
+          fetchError.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' ||
+          fetchError.cause?.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' ||
+          fetchError.message?.includes('certificate') ||
+          fetchError.message?.includes('SSL') ||
+          fetchError.message?.includes('TLS') ||
+          fetchError.code === 'ECONNREFUSED'
+        ) {
+          console.warn(
+            '⚠️  Network/SSL issue detected. Providing mock response. NODE_TLS_REJECT_UNAUTHORIZED is set to:',
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED
           );
+
+          // Generate intelligent mock response based on context
+          let mockResponse =
+            "I can see you're working with a file system project. ";
+
+          if (context) {
+            mockResponse += `Based on the directory listing, I can see files like ${
+              context.includes('package.json')
+                ? 'package.json (Node.js project), '
+                : ''
+            }${context.includes('README.md') ? 'README.md, ' : ''}${
+              context.includes('.git') ? 'and a Git repository. ' : ''
+            }This appears to be a well-organized development project.`;
+          } else {
+            if (message.toLowerCase().includes('directory')) {
+              mockResponse +=
+                "To help you explore your files, you can use commands like 'list current directory' or ask about specific files.";
+            } else {
+              mockResponse +=
+                "I'm here to help you explore and understand your files. What would you like to know about your project?";
+            }
+          }
+
+          mockResponse +=
+            '\n\n⚠️ Note: This is a mock response due to SSL certificate issues. To get real Claude responses, please check your network configuration.';
+
+          return res.json({
+            response: mockResponse,
+            usage: {
+              promptTokens: 50,
+              completionTokens: 100,
+              totalTokens: 150,
+            },
+          });
         }
-
-        const data = await response.json();
-        const aiResponse = data.content?.[0]?.text || 'No response from Claude';
-
-        res.json({
-          response: aiResponse,
-          usage: {
-            promptTokens: data.usage?.input_tokens,
-            completionTokens: data.usage?.output_tokens,
-            totalTokens:
-              (data.usage?.input_tokens || 0) +
-              (data.usage?.output_tokens || 0),
-          },
-        });
-      } catch (error) {
-        console.error('Chat API Error:', error);
-        res.status(500).json({
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
+        throw fetchError;
       }
-    });
 
-    // Helper function to load Claude API key from environment
-    function loadClaudeApiKey(): string | null {
-      const envKey = process.env.ANTHROPIC_API_KEY;
-      if (envKey && envKey.trim()) {
-        return envKey.trim();
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(
+          `Claude API error: ${response.status} ${response.statusText}. Response: ${errorText}`
+        );
       }
-      return null;
+
+      const data = await response.json();
+      const aiResponse = data.content?.[0]?.text || 'No response from Claude';
+
+      res.json({
+        response: aiResponse,
+        usage: {
+          promptTokens: data.usage?.input_tokens,
+          completionTokens: data.usage?.output_tokens,
+          totalTokens:
+            (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0),
+        },
+      });
+    } catch (error) {
+      console.error('Chat API Error:', error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
+  });
 
-    // Simple JSON-RPC over HTTP handler
-    app.post('/mcp', async (req, res) => {
-      try {
-        // For now, create a simple HTTP transport simulation
-        const transport = new StdioServerTransport();
-        await server.connect(transport);
+  // Helper function to load Claude API key from environment
+  function loadClaudeApiKey(): string | null {
+    const envKey = process.env.ANTHROPIC_API_KEY;
+    if (envKey && envKey.trim()) {
+      return envKey.trim();
+    }
+    return null;
+  }
 
-        res.json({
-          jsonrpc: '2.0',
-          error: {
-            code: -32601,
-            message:
-              'HTTP transport not fully implemented yet. Use STDIO mode for now.',
-          },
-          id: req.body.id || null,
-        });
-      } catch (error) {
-        res.status(500).json({
-          jsonrpc: '2.0',
-          error: {
-            code: -32603,
-            message: 'Internal error',
-          },
-          id: req.body.id || null,
-        });
-      }
-    });
+  // Simple JSON-RPC over HTTP handler
+  app.post('/mcp', async (req, res) => {
+    try {
+      // For now, create a simple HTTP transport simulation
+      const transport = new StdioServerTransport();
+      await server.connect(transport);
 
-    const port = 3000;
-    app.listen(port, () => {
-      console.log(
-        `🚀 File Context MCP Server with Interactive UI running on http://localhost:${port}`
-      );
-      console.log(`📡 MCP endpoint: http://localhost:${port}/mcp`);
-      console.log(`🎨 Interactive UI: http://localhost:${port}`);
-      console.log(`📋 API endpoint: http://localhost:${port}/api/tools`);
-      console.log(
-        `\n💡 Open http://localhost:${port} in your browser to use the interactive interface!`
-      );
-      console.log(
-        `\n🔧 For MCP clients, use STDIO mode with: npm run start:stdio`
-      );
-    });
+      res.json({
+        jsonrpc: '2.0',
+        error: {
+          code: -32601,
+          message:
+            'HTTP transport not fully implemented yet. Use STDIO mode for now.',
+        },
+        id: req.body.id || null,
+      });
+    } catch (error) {
+      res.status(500).json({
+        jsonrpc: '2.0',
+        error: {
+          code: -32603,
+          message: 'Internal error',
+        },
+        id: req.body.id || null,
+      });
+    }
+  });
+
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    const host =
+      process.env.NODE_ENV === 'production'
+        ? 'your-vercel-domain'
+        : `localhost:${port}`;
+    console.log(
+      `🚀 File Context MCP Server with Interactive UI running on http://${host}`
+    );
+    console.log(`📡 MCP endpoint: http://${host}/mcp`);
+    console.log(`🎨 Interactive UI: http://${host}`);
+    console.log(`📋 API endpoint: http://${host}/api/tools`);
+    console.log(
+      `\n💡 Open http://localhost:${port} in your browser to use the interactive interface!`
+    );
+    console.log(
+      `\n🔧 For MCP clients, use STDIO mode with: npm run start:stdio`
+    );
+  });
+
+  return app;
+}
+
+// Main function - support both STDIO and HTTP
+async function main() {
+  const mode = process.argv[2] || 'stdio';
+
+  if (mode === 'http') {
+    // HTTP mode for browser access
+    createExpressApp();
   } else {
     // STDIO mode for local clients
     const transport = new StdioServerTransport();
@@ -947,6 +957,9 @@ ${contextMessage}`,
     console.error('File Context MCP Server running on stdio');
   }
 }
+
+// Export the app creation function for Vercel
+export { createExpressApp };
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
@@ -959,7 +972,10 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-main().catch((error) => {
-  console.error('Fatal error in main():', error);
-  process.exit(1);
-});
+// Only run main if this is the entry point
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
+    console.error('Fatal error in main():', error);
+    process.exit(1);
+  });
+}
