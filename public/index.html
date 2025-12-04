@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>File Context MCP - Interactive UI</title>
+    <link
+      rel="stylesheet"
+      href="styles.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="header-content">
+          <h1>🗂️ File Context MCP</h1>
+          <p class="subtitle">Interactive File System Explorer & AI Chat</p>
+          <div class="status-indicator">
+            <span
+              class="status-dot"
+              id="status-dot"
+            ></span>
+            <span id="status-text">Connecting...</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <!-- Tools Panel -->
+        <div class="panel tools-panel">
+          <h2>📋 File Operations</h2>
+
+          <div class="tool-section">
+            <h3>📖 Read File</h3>
+            <div class="input-group">
+              <input
+                type="text"
+                id="read-file-path"
+                placeholder="/path/to/file.txt"
+                value="."
+              />
+              <button
+                onclick="readFile()"
+                class="btn btn-primary"
+              >
+                Read
+              </button>
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <h3>📁 List Directory</h3>
+            <div class="input-group">
+              <input
+                type="text"
+                id="list-dir-path"
+                placeholder="/path/to/directory"
+                value="."
+              />
+              <button
+                onclick="listDirectory()"
+                class="btn btn-primary"
+              >
+                List
+              </button>
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <h3>🔍 Search Files</h3>
+            <div class="input-group">
+              <input
+                type="text"
+                id="search-root-path"
+                placeholder="Root path"
+                value="."
+              />
+              <input
+                type="text"
+                id="search-pattern"
+                placeholder="Search pattern (e.g., *.js)"
+              />
+              <button
+                onclick="searchFiles()"
+                class="btn btn-primary"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <h3>📊 Analyze Folder</h3>
+            <div class="input-group">
+              <input
+                type="text"
+                id="analyze-folder-path"
+                placeholder="/path/to/analyze"
+                value="."
+              />
+              <button
+                onclick="analyzeFolder()"
+                class="btn btn-primary"
+              >
+                Analyze
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel chat-panel">
+          <h2>💬 AI Chat Assistant</h2>
+          <div class="chat-container">
+            <div
+              class="chat-messages"
+              id="chat-messages"
+            >
+              <div class="message bot-message">
+                <div class="message-content">
+                  <strong>🤖 AI Assistant:</strong> Hello! I'm here to help you
+                  explore and understand your files. You can use the file
+                  operations on the left, or just ask me questions about your
+                  project files. Try saying something like "What files are in
+                  the current directory?" or "Show me the package.json file".
+                </div>
+                <div class="message-time">Just now</div>
+              </div>
+            </div>
+            <div class="chat-input-container">
+              <input
+                type="text"
+                id="chat-input"
+                placeholder="Ask about your files or request an operation..."
+                onkeypress="handleChatKeyPress(event)"
+              />
+              <button
+                onclick="sendChatMessage()"
+                class="btn btn-chat"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="panel results-panel">
+          <h2>📄 Results</h2>
+          <div class="results-container">
+            <div
+              id="results-content"
+              class="results-content"
+            >
+              <div class="placeholder">
+                <div class="placeholder-icon">📁</div>
+                <p>
+                  Results from file operations and AI responses will appear
+                  here.
+                </p>
+                <p class="placeholder-hint">
+                  Try using one of the tools above or ask the AI assistant a
+                  question!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Loading overlay -->
+      <div
+        id="loading-overlay"
+        class="loading-overlay hidden"
+      >
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Processing...</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
