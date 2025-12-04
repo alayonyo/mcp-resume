@@ -741,20 +741,20 @@ function createExpressApp() {
       try {
         const requestBody = JSON.stringify({
           model: 'claude-3-haiku-20240307',
-          max_tokens: 60,
+          max_tokens: 800,
+          system: `You are Yonatan Ayalon's professional AI assistant. Answer questions about his qualifications in 2-3 concise sentences (under 600 characters total).
+
+Key points to highlight:
+- Expert frontend engineer: 8+ years React, TypeScript, modern JavaScript
+- Specialized in scalable, high-performance web apps with exceptional UX
+- Full-stack capable with Node.js, APIs, cloud architecture experience
+- Frontend system design: 100K+ user platforms, real-time data, sub-100ms latency
+
+Keep responses brief, specific, and professional. No placeholder text.`,
           messages: [
             {
               role: 'user',
-              content: `You are an AI assistant for Yonatan Ayalon's professional profile. 
-
-STRICT RULES:
-- Maximum 150 characters for main response
-- One key highlight only
-- End with: "More details? Ask: [topic1, topic2]"
-
-Format: "[Key point]. More details? Ask: [specific areas]"
-
-${contextMessage}`,
+              content: contextMessage,
             },
           ],
         });
