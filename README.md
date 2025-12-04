@@ -41,25 +41,26 @@ npm install
 
 ### 2. Configure Claude API Key
 
-Create a `claude-api-key.txt` file in the project root and place your actual
-Anthropic/Claude API key inside it:
+Set your Anthropic/Claude API key as an environment variable. Create a
+`.env.local` file in the project root:
 
 ```bash
-echo "sk-ant-api03-your-actual-api-key-here" > claude-api-key.txt
+echo "ANTHROPIC_API_KEY=sk-ant-api03-your-actual-api-key-here" > .env.local
 ```
 
 **Note**: This project works exclusively with **Anthropic's Claude API**. You'll
 need an API key from [Anthropic](https://console.anthropic.com/). OpenAI keys
 are not supported.
 
-Or set environment variable:
+Alternatively, you can set the environment variable directly:
 
 ```bash
 export ANTHROPIC_API_KEY="your-claude-api-key-here"
 ```
 
-⚠️ **Security Note**: The `claude-api-key.txt` file is automatically ignored by
-git to keep your API key secure.
+⚠️ **Security Note**: The `.env.local` file is automatically ignored by git to
+keep your API key secure. If no API key is found, the application will
+automatically run in mock mode for development.
 
 ### 3. Build the Project
 

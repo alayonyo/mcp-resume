@@ -8,6 +8,34 @@ import * as https from 'https';
 import express from 'express';
 import cors from 'cors';
 
+// Load environment variables from .env.local file
+function loadEnvFile() {
+  try {
+    const envPath = path.resolve('.env.local');
+    if (fs.existsSync(envPath)) {
+      const envContent = fs.readFileSync(envPath, 'utf-8');
+      const lines = envContent.split('\n');
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+          const [key, ...valueParts] = trimmed.split('=');
+          const value = valueParts.join('=');
+          if (key && value) {
+            process.env[key] = value;
+          }
+        }
+      }
+      console.log('📋 Loaded environment variables from .env.local');
+    }
+  } catch (error) {
+    console.warn('⚠️  Could not load .env.local file:', error);
+  }
+}
+
+// Load environment variables at startup
+loadEnvFile();
+
 // Environment detection
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isLocalhost =
@@ -670,7 +698,7 @@ async function main() {
         if (!apiKey) {
           return res.status(400).json({
             error:
-              'Claude API key not found. Please create claude-api-key.txt or set ANTHROPIC_API_KEY environment variable.',
+              'Claude API key not found. Please set ANTHROPIC_API_KEY environment variable in your .env.local file.',
           });
         }
 
@@ -860,25 +888,12 @@ ${contextMessage}`,
       }
     });
 
-    // Helper function to load Claude API key
+    // Helper function to load Claude API key from environment
     function loadClaudeApiKey(): string | null {
-      // Try to load from file first
-      try {
-        const keyPath = path.join(process.cwd(), 'claude-api-key.txt');
-        const key = fs.readFileSync(keyPath, 'utf-8').trim();
-        if (key) {
-          return key;
-        }
-      } catch (error) {
-        // File not found, try environment
-      }
-
-      // Try environment variable
       const envKey = process.env.ANTHROPIC_API_KEY;
-      if (envKey) {
-        return envKey;
+      if (envKey && envKey.trim()) {
+        return envKey.trim();
       }
-
       return null;
     }
 

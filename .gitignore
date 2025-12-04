@@ -29,4 +29,4 @@ tests/test-data/
 .vscode/settings.json
 .idea/
 *.swp
-*.swoclaude-api-key.txt
+*.swo

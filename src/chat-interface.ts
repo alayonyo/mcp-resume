@@ -22,20 +22,21 @@ import {
 } from './file-operations.js';
 
 export class FileContextChat {
-  private apiKey: string;
+  private apiKey?: string;
   private conversation: Array<{ role: 'user' | 'assistant'; content: string }> =
     [];
   private useMockApi: boolean;
 
-  constructor(mockMode: boolean = false) {
-    this.useMockApi = mockMode;
+  constructor(useMockApi: boolean = false) {
+    this.useMockApi = useMockApi;
 
-    if (mockMode) {
-      this.apiKey = 'mock-key';
-      console.log('🤖 Running in MOCK MODE - No network calls!');
-    } else {
+    if (!useMockApi) {
       this.apiKey = this.loadApiKey();
-      console.log('🤖 Connected to Claude API!');
+      if (!this.apiKey) {
+        // No API key available, enable mock mode
+        console.log('🎭 Enabling mock mode due to missing API key');
+        this.useMockApi = true;
+      }
     }
   }
 
@@ -353,6 +354,12 @@ export class FileContextChat {
       console.log('🎭 Mock mode - simulating successful connection');
       return true;
     }
+
+    if (!this.apiKey) {
+      console.log('⚠️  No API key available - connection test failed');
+      return false;
+    }
+
     try {
       console.log('🔍 Testing Claude API connection...');
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -389,36 +396,23 @@ export class FileContextChat {
     }
   }
 
-  private loadApiKey(): string {
-    // Try to load from file first
-    try {
-      const keyPath = path.join(process.cwd(), 'claude-api-key.txt');
-      const key = fs.readFileSync(keyPath, 'utf-8').trim();
-      if (key) {
-        console.log('🔑 Loaded API key from claude-api-key.txt');
-        return key;
-      }
-    } catch (error) {
-      console.log(
-        '⚠️  claude-api-key.txt not found, trying environment variable...'
-      );
-    }
-
-    // Fallback to environment variable
+  private loadApiKey(): string | undefined {
+    // Try environment variable
     const envKey = process.env.ANTHROPIC_API_KEY;
-    if (envKey) {
+    if (envKey && envKey.trim()) {
       console.log(
         '🔑 Loaded API key from ANTHROPIC_API_KEY environment variable'
       );
-      return envKey;
+      return envKey.trim();
     }
 
-    // No key found
-    console.error('❌ No Claude API key found!');
-    console.error('Please either:');
-    console.error('  1. Create a claude-api-key.txt file with your API key');
-    console.error('  2. Set ANTHROPIC_API_KEY environment variable');
-    process.exit(1);
+    // No key found - will use mock mode
+    console.log('⚠️  No ANTHROPIC_API_KEY found in environment variables.');
+    console.log('🎭 Falling back to mock mode for development.');
+    console.log(
+      '💡 To use real Claude API, set ANTHROPIC_API_KEY in your .env.local file'
+    );
+    return undefined;
   }
 
   async executeFunction(name: string, args: any): Promise<string> {
@@ -778,6 +772,10 @@ Education: Computer Science
           executedCalls
         );
       } else {
+        if (!this.apiKey) {
+          throw new Error('No API key available for Claude API call');
+        }
+
         console.log('🌐 Calling Claude API...');
 
         const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -826,11 +824,11 @@ Education: Computer Science
           errorMsg += '\n   • Network connectivity issues';
           errorMsg += '\n   • Invalid API key';
           errorMsg +=
-            '\n\n🔧 Try: Check your network connection and API key in claude-api-key.txt';
+            '\n\n🔧 Try: Check your network connection and ANTHROPIC_API_KEY in .env.local file';
         }
         if (error.message.includes('401')) {
           errorMsg +=
-            '\n\n🔑 Invalid API key. Please check your claude-api-key.txt file.';
+            '\n\n🔑 Invalid API key. Please check your ANTHROPIC_API_KEY in .env.local file.';
         }
         if (error.message.includes('429')) {
           errorMsg +=
@@ -1074,7 +1072,9 @@ async function main() {
   );
 
   if (!useMock) {
-    console.log('🔐 API key loaded from claude-api-key.txt or environment');
+    console.log(
+      '🔐 API key loaded from ANTHROPIC_API_KEY environment variable'
+    );
   }
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -1087,7 +1087,7 @@ async function main() {
     console.log('\n⚠️  API connection failed. Try using mock mode instead:');
     console.log('💡 Run: npm run chat -- --mock');
     console.log(
-      'Or check your network connection and claude-api-key.txt file.'
+      'Or check your network connection and ANTHROPIC_API_KEY in .env.local file.'
     );
 
     const rl = readline.createInterface({
