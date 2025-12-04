@@ -8,8 +8,14 @@ import * as https from 'https';
 import express from 'express';
 import cors from 'cors';
 
-// Load environment variables from .env.local file
+// Load environment variables from .env.local file (for local development only)
 function loadEnvFile() {
+  // Skip file loading in production/serverless environments
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    console.log('📋 Using environment variables from platform configuration');
+    return;
+  }
+
   try {
     const envPath = path.resolve('.env.local');
     if (fs.existsSync(envPath)) {
@@ -920,12 +926,20 @@ ${contextMessage}`,
     }
   });
 
+  // For serverless functions (like Vercel), just return the app
+  // Don't call app.listen() - that's handled by the serverless platform
+  console.log('🚀 Express app created for serverless deployment');
+
+  return app;
+}
+
+// Function to start the server locally (with app.listen)
+async function startServer() {
+  const app = createExpressApp();
   const port = process.env.PORT || 3000;
+
   app.listen(port, () => {
-    const host =
-      process.env.NODE_ENV === 'production'
-        ? 'your-vercel-domain'
-        : `localhost:${port}`;
+    const host = `localhost:${port}`;
     console.log(
       `🚀 File Context MCP Server with Interactive UI running on http://${host}`
     );
@@ -939,8 +953,6 @@ ${contextMessage}`,
       `\n🔧 For MCP clients, use STDIO mode with: npm run start:stdio`
     );
   });
-
-  return app;
 }
 
 // Main function - support both STDIO and HTTP
@@ -949,7 +961,7 @@ async function main() {
 
   if (mode === 'http') {
     // HTTP mode for browser access
-    createExpressApp();
+    await startServer();
   } else {
     // STDIO mode for local clients
     const transport = new StdioServerTransport();
