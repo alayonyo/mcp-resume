@@ -2,31 +2,51 @@
 
 ## Summary
 
-Experienced Full-Stack Software Engineer with 8+ years of expertise in React,
-TypeScript, Node.js, and cloud technologies. Proven track record of building
-scalable applications, leading technical teams, and delivering high-impact
-solutions for startups and enterprise companies.
+Seasoned Senior Front-End Engineer with over 15 years of experience architecting
+high-performance, scalable web applications and micro frontend systems. Proven
+track record of designing robust UI architectures, implementing enterprise-scale
+design systems, and driving measurable improvements in performance,
+accessibility, and user experience.
 
-## Technical Skills
+Expert in React, TypeScript, and modern frontend frameworks, with deep
+experience in design systems, component library development, experimentation
+platforms, and A/B testing infrastructure. Proven track record of implementing
+scalable, accessible solutions that improve user engagement and accelerate
+development velocity across engineering teams.
 
-### Frontend Development
+Passionate about building scalable frontend infrastructure, translating complex
+system requirements into elegant user experiences, and leading cross-functional
+teams to deliver high-quality web applications.
 
-- **React & TypeScript**: Expert level, 6+ years experience building complex
-  SPAs
-- **Modern JavaScript (ES6+)**: Advanced proficiency with functional programming
-  patterns
-- **State Management**: Redux, Context API, Zustand, MobX
+## Current Role
+
+**Senior Software Engineer at Vimeo** (July 2020 - Present)
+
+- Architecting React + TypeScript + Redux applications serving millions of users
+- Led 40% load time improvement through comprehensive performance optimization
+- Designed and implemented micro frontend architecture for team scalability
+- Built E2E testing infrastructure with Selenium, WebDriverIO, and BrowserStack
+- Led design system implementation across multiple product teams
+- Drove A/B testing and conversion optimization initiatives
+- Developed Python scripts for data processing and backend automation tasks
+
+## Technical Expertise
+
+### Frontend Development (15+ years)
+
+- **React & TypeScript**: Expert level with 8+ years building enterprise-scale
+  applications
+- **Performance**: Bundle optimization, code splitting, lazy loading achieving
+  90+ Lighthouse scores
+- **Architecture**: Micro frontends, component libraries, scalable design
+  systems
+- **State Management**: Redux, Redux Toolkit (RTK), Context API, Zustand
 - **CSS & Styling**: Styled-components, Emotion, Tailwind CSS, SASS/SCSS
 - **Build Tools**: Webpack, Vite, Create React App, Next.js
-- **Testing**: Jest, React Testing Library, Cypress, Playwright
-
-### Backend Development
-
-- **Node.js**: 5+ years building REST APIs, GraphQL APIs, and microservices
-- **Database**: PostgreSQL, MongoDB, Redis, Prisma, TypeORM
-- **Cloud & DevOps**: AWS (EC2, Lambda, S3, RDS), Docker, Kubernetes
-- **API Development**: RESTful services, GraphQL, tRPC, WebSocket
-  implementations
+- **Testing**: Jest, React Testing Library, Playwright, Cucumber, Karma, Jasmine
+- **Legacy Technologies**: jQuery, Flash CMS, Photoshop, Freehand
+- **Modern Stack**: Next.js, Webpack optimization, PWAs with offline
+  functionality
 
 ### Architecture & Leadership
 
@@ -34,37 +54,83 @@ solutions for startups and enterprise companies.
 - **Performance Optimization**: Code splitting, lazy loading, caching strategies
 - **Team Leadership**: Mentored 5+ junior developers, led code reviews
 - **Agile Methodologies**: Scrum, Kanban, CI/CD implementation
+- **A/B Testing**: Led experimentation platforms with measurable ROI
+  improvements
+- **Cross-functional**: Product, design, and backend team collaboration
+
+### Backend Development
+
+- **Node.js**: 5+ years building REST APIs, GraphQL APIs, and microservices
+- **Python**: Data processing, automation scripts, backend tooling
+- **.NET Framework**: MVC4/5, WebAPI development and deployment
+- **PHP**: Server-side development, MySQL integration, portal systems
+- **Ruby on Rails**: Full-stack web application development
+- **Database**: MySQL, MSSQL, PostgreSQL, MongoDB, Redis
+- **Cloud & DevOps**: AWS (EC2, Lambda, S3, RDS), Docker, CDN optimization
+- **API Development**: RESTful services, GraphQL, tRPC, WebSocket
+  implementations
+- **Real-time**: WebSocket implementations, live data systems
+
+### Security & Best Practices
+
+- **Security**: XSS Prevention, CSRF Protection, Content Security Policy (CSP)
+- **Authentication**: OAuth & JWT, HTTP-Only Cookies, Input Sanitization
+- **Standards**: Secure Coding Practices, OWASP Guidelines, Accessibility (WCAG)
 
 ## Key Achievements
 
-### E-commerce Platform (2022-2024)
+### Vimeo Performance Optimization (2020-Present)
 
-- Built React/TypeScript frontend handling 100K+ daily active users
-- Implemented real-time inventory management reducing overselling by 90%
-- Led migration from monolith to microservices architecture
-- **Technologies**: React, TypeScript, Node.js, AWS, PostgreSQL
+- Achieved 40% load time improvement through comprehensive optimization strategy
+- Built performance monitoring and logging systems with real-time alerting
+- Implemented micro frontend architecture enabling independent team deployments
+- **Technologies**: React, TypeScript, Redux, AWS, Performance APIs
 
-### FinTech Dashboard (2021-2022)
+### FinTech Application Leadership (2019-2020) - Credifi
 
-- Developed trading dashboard with real-time data visualization
-- Implemented advanced charting with sub-100ms latency requirements
-- Built secure authentication system with multi-factor support
-- **Technologies**: React, D3.js, WebSocket, Redis, MongoDB
+- Sole front-end developer responsible for UX/UI of flagship FinTech customer
+  application
+- Refactored and maintained Angular (v1 and v2+) applications in TypeScript,
+  significantly improving performance
+- Directed UI/UX strategy and ensured design system consistency across views
+- **Technologies**: Angular, TypeScript, FinTech analytics, commercial real
+  estate
 
-### Gaming Analytics Platform (2020-2021)
+### Electronics Analytics Platform - Tech Lead (2015-2017)
 
-- Created analytics dashboard processing millions of events daily
-- Built data pipeline handling 50TB+ of user interaction data
-- Implemented A/B testing framework used by product teams
-- **Technologies**: React, Node.js, Kafka, ClickHouse, Docker
+- Spearheaded Angular 2 + TypeScript migration as early adopter, leading
+  cutting-edge frontend technology implementation
+- Tech Lead for composite component architecture designed to present live wafer
+  chip analytics in real-time UI
+- Architected modular component system for complex electronics data
+  visualization and monitoring
+- Led team in implementing modern JavaScript best practices and unit testing
+  frameworks
+- **Technologies**: Angular 2, TypeScript, Composite Components, Electronics
+  Analytics, Real-time Data
 
-## Industry Experience
+### High-Scale Web Applications (2011-2015) - Perion
 
-- **Gaming & Entertainment**: 3+ years building user-facing applications
-- **E-commerce**: 2+ years in high-traffic retail platforms
-- **FinTech**: 2+ years in trading and financial data systems
-- **Fantasy Sports**: Experience with real-time scoring, user engagement
-  features
+- Technical leadership for SearchApps team developing multiple high-scale web
+  applications
+- Created web UIs and browser extensions for millions of daily users
+- Implemented A/B testing frameworks that significantly improved conversion
+  rates and user engagement
+- Delivered internal frontend training courses on MVC4, JavaScript best
+  practices, and scalable design patterns
+- **Technologies**: .NET MVC4/5, WebAPI, MySQL/MSSQL, JavaScript, Browser
+  Extensions, CDN optimization
+
+## Professional Experience Timeline
+
+- **2020-Present**: Senior Software Engineer at Vimeo
+- **2019-2020**: Senior Frontend Developer at Credifi
+- **2017-2018**: Front-End Team Lead at Herolo
+- **2015-2017**: Senior Developer & Scrum Master at Optimal+
+- **2011-2015**: Senior Developer at Perion/Conduit (SearchApps team)
+- **2010-2011**: Front-End Developer at Convertonet
+- **2007-2010**: Full-Stack Developer at Walla! (Major Israeli Web Portal)
+- **2006-2007**: Web Developer at Excelang (Ruby on Rails startup)
 
 ## Professional Strengths
 
@@ -76,11 +142,13 @@ solutions for startups and enterprise companies.
 - **User-Centric**: Deep understanding of UX principles and performance
   optimization
 
-## Education & Certifications
+## Core Competencies
 
-- Bachelor's Degree in Computer Science
-- AWS Certified Solutions Architect
-- Advanced React & TypeScript certifications
+- **Leadership**: Strong Team Player, High Integrity & Work Ethic, Mentorship
+  Skills
+- **Technical**: Fast Learner, Hands-on Mindset, User Experience Advocate
+- **Communication**: Excellent Communication, Continuous Learning,
+  Cross-functional Collaboration
 
 ## Languages
 
