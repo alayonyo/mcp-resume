@@ -214,10 +214,24 @@ function createApp() {
             return res.status(400).json({ error: 'Missing path parameter' });
           }
 
-          // Restrict to api-resources folder only for security
+          // Restrict to api-resources folder and only .md files for security
           let restrictedFilePath = params.path;
           if (!restrictedFilePath.startsWith('api-resources/')) {
             restrictedFilePath = `api-resources/${restrictedFilePath}`;
+          }
+
+          // Only allow reading .md files
+          if (!restrictedFilePath.endsWith('.md')) {
+            return res.status(400).json({
+              error: 'Only .md files are allowed to be read',
+            });
+          }
+
+          // Check if file exists before trying to read it
+          if (!fs.existsSync(path.resolve(restrictedFilePath))) {
+            return res.status(404).json({
+              error: `File ${restrictedFilePath} not found`,
+            });
           }
 
           result = await readFileContent(restrictedFilePath);
@@ -228,30 +242,44 @@ function createApp() {
             return res.status(400).json({ error: 'Missing path parameter' });
           }
 
-          // Restrict to api-resources folder only
+          // Only allow listing the main api-resources directory
           let restrictedPath = params.path;
           if (
             restrictedPath === '.' ||
             restrictedPath === '' ||
-            restrictedPath === '/'
+            restrictedPath === '/' ||
+            restrictedPath === 'api-resources'
           ) {
             restrictedPath = 'api-resources';
-          } else if (
-            !restrictedPath.startsWith('api-resources/') &&
-            restrictedPath !== 'api-resources'
-          ) {
-            restrictedPath = `api-resources/${restrictedPath}`;
+          } else {
+            // Don't allow listing subdirectories - just return the main directory
+            restrictedPath = 'api-resources';
+          }
+
+          // Check if directory exists before trying to list it
+          if (!fs.existsSync(path.resolve(restrictedPath))) {
+            return res.status(404).json({
+              error: `Directory ${restrictedPath} not found`,
+            });
           }
 
           const items = await listDirectory(restrictedPath);
-          result = items
-            .map(
-              (item) =>
-                `${item.type === 'directory' ? '📁' : '📄'} ${item.name}${
-                  item.size !== undefined ? ` (${item.size} bytes)` : ''
-                }`
-            )
-            .join('\\n');
+          // Filter to only show .md files
+          const mdFiles = items.filter(
+            (item) => item.type === 'file' && item.name.endsWith('.md')
+          );
+
+          result =
+            mdFiles.length > 0
+              ? mdFiles
+                  .map(
+                    (item) =>
+                      `📄 ${item.name}${
+                        item.size !== undefined ? ` (${item.size} bytes)` : ''
+                      }`
+                  )
+                  .join('\\n')
+              : 'No .md files found in api-resources directory';
           break;
 
         case 'search_files':
@@ -261,26 +289,24 @@ function createApp() {
             });
           }
 
-          // Restrict to api-resources folder only
-          let restrictedRootPath = params.rootPath;
-          if (
-            restrictedRootPath === '.' ||
-            restrictedRootPath === '' ||
-            restrictedRootPath === '/'
-          ) {
-            restrictedRootPath = 'api-resources';
-          } else if (
-            !restrictedRootPath.startsWith('api-resources/') &&
-            restrictedRootPath !== 'api-resources'
-          ) {
-            restrictedRootPath = `api-resources/${restrictedRootPath}`;
+          // Always restrict to api-resources folder only
+          const restrictedRootPath = 'api-resources';
+
+          // Check if directory exists
+          if (!fs.existsSync(path.resolve(restrictedRootPath))) {
+            return res.status(404).json({
+              error: `Directory ${restrictedRootPath} not found`,
+            });
           }
 
           const files = await searchFiles(restrictedRootPath, params.pattern);
+          // Filter to only show .md files
+          const matchingMdFiles = files.filter((file) => file.endsWith('.md'));
+
           result =
-            files.length > 0
-              ? files.map((f) => `📄 ${f}`).join('\\n')
-              : `No files found matching "${params.pattern}" in ${restrictedRootPath}`;
+            matchingMdFiles.length > 0
+              ? matchingMdFiles.map((f) => `📄 ${f}`).join('\\n')
+              : `No .md files found matching "${params.pattern}" in ${restrictedRootPath}`;
           break;
 
         default:
@@ -318,7 +344,7 @@ function createApp() {
         });
       }
 
-      // Automatically load all files from api-resources as context
+      // Automatically load only .md files from api-resources as context
       let contextMessage = message;
       try {
         const apiResourcesPath = path.resolve('api-resources');
@@ -327,18 +353,19 @@ function createApp() {
           const fileContents = [];
 
           for (const file of files) {
-            if (file.startsWith('.')) continue; // Skip hidden files
+            // Only process .md files and skip hidden files
+            if (file.startsWith('.') || !file.endsWith('.md')) continue;
 
             const filePath = path.join(apiResourcesPath, file);
-            const stats = await fs.promises.stat(filePath);
 
-            if (stats.isFile()) {
-              try {
+            try {
+              const stats = await fs.promises.stat(filePath);
+              if (stats.isFile()) {
                 const content = await readFileContent(filePath);
                 fileContents.push(`=== File: ${file} ===\\n${content}\\n`);
-              } catch (error) {
-                console.log(`Could not read ${file}:`, error);
               }
+            } catch (error) {
+              console.log(`Could not read ${file}:`, error.message);
             }
           }
 
@@ -349,7 +376,7 @@ function createApp() {
           }
         }
       } catch (error) {
-        console.log('Could not load api-resources context:', error);
+        console.log('Could not load api-resources context:', error.message);
       }
 
       // Call Claude API
