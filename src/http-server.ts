@@ -7,6 +7,10 @@ import * as path from 'path';
 import * as https from 'https';
 import express from 'express';
 import cors from 'cors';
+import {
+  corsOptions as sharedCorsOptions,
+  isDevelopment as isDevMode,
+} from './config.js';
 
 // Load environment variables from .env.local file (for local development only)
 function loadEnvFile() {
@@ -438,7 +442,9 @@ server.registerTool(
 // Create Express app (separate from server startup for Vercel compatibility)
 function createExpressApp() {
   const app = express();
-  app.use(cors());
+
+  // Use shared CORS configuration (dev mode only)
+  app.use(cors(sharedCorsOptions));
   app.use(express.json());
 
   // Serve static UI files

@@ -3,9 +3,7 @@ import cors from 'cors';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
-
-// Environment detection
-const isDevelopment = process.env.NODE_ENV !== 'production';
+import { corsOptions, allowedOrigins, isDevelopment } from '../build/config.js';
 
 // Configure HTTPS agent for API calls
 const httpsAgent = new https.Agent({
@@ -114,7 +112,9 @@ function loadClaudeApiKey() {
 // Create Express app
 function createApp() {
   const app = express();
-  app.use(cors());
+
+  // Use shared CORS configuration (dev mode only)
+  app.use(cors(corsOptions));
   app.use(express.json());
 
   // Serve static files - try multiple possible locations
@@ -193,6 +193,59 @@ function createApp() {
       environment: process.env.NODE_ENV || 'development',
       hasClaudeKey: !!process.env.ANTHROPIC_API_KEY,
     });
+  });
+
+  // Public API endpoint for third-party integrations
+  app.post('/api/public/evaluate-candidate', (req, res) => {
+    // Set CORS headers for this specific endpoint
+    res.header('Access-Control-Allow-Origin', 'https://yonatan-ayalon.com');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    try {
+      const { jobDescription, candidateName = 'Yonatan' } = req.body;
+
+      if (!jobDescription) {
+        return res.status(400).json({
+          error: 'Missing jobDescription parameter',
+          usage:
+            'POST /api/public/evaluate-candidate with { "jobDescription": "..." }',
+        });
+      }
+
+      // Validate origin
+      const origin = req.headers.origin;
+
+      if (origin && !allowedOrigins.includes(origin)) {
+        return res.status(403).json({
+          error: 'Access denied. Unauthorized origin.',
+          allowedOrigins: allowedOrigins,
+        });
+      }
+
+      // Forward to the chat endpoint with specific formatting
+      const message = `will ${candidateName.toLowerCase()} be a good fit for: ${jobDescription}`;
+
+      // Call internal chat API
+      req.body = { message };
+
+      // Forward to chat endpoint logic (we'll extract this to avoid duplication)
+      handleChatRequest(req, res);
+    } catch (error) {
+      console.error('Public API Error:', error);
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Please try again later',
+      });
+    }
+  });
+
+  // Handle preflight requests for public API
+  app.options('/api/public/evaluate-candidate', (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'https://yonatan-ayalon.com');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
   });
 
   // API tools endpoint
@@ -324,8 +377,8 @@ function createApp() {
     }
   });
 
-  // Claude chat endpoint
-  app.post('/api/chat', async (req, res) => {
+  // Extract chat logic for reuse
+  async function handleChatRequest(req, res) {
     try {
       const { message, context } = req.body;
 
@@ -525,6 +578,40 @@ STRICTLY FORBIDDEN: "Based on", "According to", "The information shows", "From w
         },
       });
     }
+  }
+
+  // Handle preflight requests for chat API
+  app.options('/api/chat', (req, res) => {
+    res.header(
+      'Access-Control-Allow-Origin',
+      req.headers.origin && allowedOrigins.includes(req.headers.origin)
+        ? req.headers.origin
+        : allowedOrigins[0]
+    );
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, x-api-key, anthropic-version'
+    );
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(200);
+  });
+
+  // Claude chat endpoint
+  app.post('/api/chat', async (req, res) => {
+    // Set CORS headers explicitly for chat endpoint
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, x-api-key, anthropic-version'
+      );
+    }
+
+    await handleChatRequest(req, res);
   });
 
   return app;
