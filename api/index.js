@@ -3,7 +3,54 @@ import cors from 'cors';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
-import { corsOptions, allowedOrigins, isDevelopment } from '../build/config.js';
+
+// Inline configuration to avoid missing build/config.js in Vercel
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const corsOptions = isDevelopment
+  ? {
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3500',
+        'https://localhost:3000',
+        'https://localhost:3500',
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-api-key',
+        'anthropic-version',
+      ],
+    }
+  : {
+      origin: ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-api-key',
+        'anthropic-version',
+      ],
+    };
+
+const allowedOrigins = isDevelopment
+  ? [
+      'http://localhost:3000',
+      'http://localhost:3500',
+      'https://localhost:3000',
+      'https://localhost:3500',
+    ]
+  : ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'];
+
+console.log(`🔧 Environment: ${isDevelopment ? 'Development' : 'Production'}`);
+console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
+console.log(`📁 Current working directory: ${process.cwd()}`);
+console.log(`🔑 Has ANTHROPIC_API_KEY: ${!!process.env.ANTHROPIC_API_KEY}`);
 
 // Configure HTTPS agent for API calls
 const httpsAgent = new https.Agent({
@@ -113,9 +160,20 @@ function loadClaudeApiKey() {
 function createApp() {
   const app = express();
 
+  // Add error handler for JSON parsing
+  app.use(express.json({ limit: '10mb' }));
+
+  // Error handling middleware for JSON parse errors
+  app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+      console.error('JSON Parse Error:', err);
+      return res.status(400).json({ error: 'Invalid JSON in request body' });
+    }
+    next();
+  });
+
   // Use shared CORS configuration (dev mode only)
   app.use(cors(corsOptions));
-  app.use(express.json());
 
   // Serve static files - try multiple possible locations
   const possibleStaticPaths = [
@@ -617,5 +675,31 @@ STRICTLY FORBIDDEN: "Based on", "According to", "The information shows", "From w
   return app;
 }
 
-// Export for Vercel
-export default createApp();
+// Create the Express app instance with error handling
+let app;
+try {
+  app = createApp();
+  console.log('✅ Express app created successfully');
+} catch (error) {
+  console.error('❌ Failed to create Express app:', error);
+  // Create a minimal fallback app
+  app = express();
+  app.use(express.json());
+  app.get('/api/status', (req, res) => {
+    res.status(500).json({
+      status: 'error',
+      message: 'App initialization failed',
+      error: error.message,
+    });
+  });
+  app.use('*', (req, res) => {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server initialization error',
+      error: error.message,
+    });
+  });
+}
+
+// Export for Vercel serverless function
+export default app;
