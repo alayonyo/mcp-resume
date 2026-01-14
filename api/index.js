@@ -170,10 +170,38 @@ function createApp() {
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     console.log(
-      `📨 Request from origin: ${origin}, Method: ${req.method}, Path: ${req.path}`
+      `📨 Request from origin: ${origin || 'none'}, Method: ${
+        req.method
+      }, Path: ${req.path}`
     );
     console.log(`✅ Allowed origins:`, allowedOrigins);
 
+    // Always set CORS headers for OPTIONS requests to avoid preflight failures
+    if (req.method === 'OPTIONS') {
+      console.log(`🔄 Handling OPTIONS preflight for ${req.path}`);
+
+      // Check if origin is allowed
+      if (origin && allowedOrigins.includes(origin)) {
+        console.log(`✅ Origin allowed: ${origin}`);
+        res.setHeader('Access-Control-Allow-Origin', origin);
+      } else {
+        console.log(`❌ Origin not allowed or missing: ${origin}`);
+        // Still set a CORS header so browser gets proper error
+        if (origin) {
+          res.setHeader('Access-Control-Allow-Origin', 'null');
+        }
+      }
+
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, x-api-key, anthropic-version'
+      );
+      return res.status(200).end();
+    }
+
+    // For actual requests, only set CORS headers if origin is allowed
     if (origin && allowedOrigins.includes(origin)) {
       console.log(`✅ Origin allowed: ${origin}`);
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -183,14 +211,10 @@ function createApp() {
         'Access-Control-Allow-Headers',
         'Content-Type, Authorization, x-api-key, anthropic-version'
       );
-    } else {
+    } else if (origin) {
       console.log(`❌ Origin not allowed: ${origin}`);
-    }
-
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-      console.log(`🔄 Handling OPTIONS preflight for ${req.path}`);
-      return res.status(200).end();
+    } else {
+      console.log(`ℹ️ No origin header (direct navigation or health check)`);
     }
 
     next();
