@@ -163,10 +163,7 @@ function loadClaudeApiKey() {
 function createApp() {
   const app = express();
 
-  // Apply CORS middleware FIRST before any other middleware or routes
-  app.use(cors(corsOptions));
-
-  // Additional CORS handling for Vercel serverless functions
+  // Manual CORS handling for Vercel serverless functions (removed cors package to avoid conflicts)
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     console.log(
@@ -186,9 +183,10 @@ function createApp() {
         res.setHeader('Access-Control-Allow-Origin', origin);
       } else {
         console.log(`❌ Origin not allowed or missing: ${origin}`);
-        // Still set a CORS header so browser gets proper error
+        // For debugging: still respond to preflight even if origin not in list
         if (origin) {
-          res.setHeader('Access-Control-Allow-Origin', 'null');
+          res.setHeader('Access-Control-Allow-Origin', origin);
+          console.log(`⚠️ DEBUG: Allowing origin anyway for testing`);
         }
       }
 
