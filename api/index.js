@@ -169,7 +169,13 @@ function createApp() {
   // Additional CORS handling for Vercel serverless functions
   app.use((req, res, next) => {
     const origin = req.headers.origin;
+    console.log(
+      `📨 Request from origin: ${origin}, Method: ${req.method}, Path: ${req.path}`
+    );
+    console.log(`✅ Allowed origins:`, allowedOrigins);
+
     if (origin && allowedOrigins.includes(origin)) {
+      console.log(`✅ Origin allowed: ${origin}`);
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -177,10 +183,13 @@ function createApp() {
         'Access-Control-Allow-Headers',
         'Content-Type, Authorization, x-api-key, anthropic-version'
       );
+    } else {
+      console.log(`❌ Origin not allowed: ${origin}`);
     }
 
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
+      console.log(`🔄 Handling OPTIONS preflight for ${req.path}`);
       return res.status(200).end();
     }
 
