@@ -9,7 +9,11 @@
       "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["api-resources/**/*.md"]
+        "includeFiles": [
+          "api-resources/**/*.md",
+          "shared-config.js",
+          "shared-config.d.ts"
+        ]
       }
     }
   ],
