@@ -163,60 +163,8 @@ function loadClaudeApiKey() {
 function createApp() {
   const app = express();
 
-  // Manual CORS handling for Vercel serverless functions (removed cors package to avoid conflicts)
-  app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    console.log(
-      `📨 Request from origin: ${origin || 'none'}, Method: ${
-        req.method
-      }, Path: ${req.path}`
-    );
-    console.log(`✅ Allowed origins:`, allowedOrigins);
-
-    // Always set CORS headers for OPTIONS requests to avoid preflight failures
-    if (req.method === 'OPTIONS') {
-      console.log(`🔄 Handling OPTIONS preflight for ${req.path}`);
-
-      // Check if origin is allowed
-      if (origin && allowedOrigins.includes(origin)) {
-        console.log(`✅ Origin allowed: ${origin}`);
-        res.setHeader('Access-Control-Allow-Origin', origin);
-      } else {
-        console.log(`❌ Origin not allowed or missing: ${origin}`);
-        // For debugging: still respond to preflight even if origin not in list
-        if (origin) {
-          res.setHeader('Access-Control-Allow-Origin', origin);
-          console.log(`⚠️ DEBUG: Allowing origin anyway for testing`);
-        }
-      }
-
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, x-api-key, anthropic-version'
-      );
-      return res.status(200).end();
-    }
-
-    // For actual requests, only set CORS headers if origin is allowed
-    if (origin && allowedOrigins.includes(origin)) {
-      console.log(`✅ Origin allowed: ${origin}`);
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, x-api-key, anthropic-version'
-      );
-    } else if (origin) {
-      console.log(`❌ Origin not allowed: ${origin}`);
-    } else {
-      console.log(`ℹ️ No origin header (direct navigation or health check)`);
-    }
-
-    next();
-  });
+  // Apply CORS middleware FIRST before any other middleware or routes
+  app.use(cors(corsOptions));
 
   // Add error handler for JSON parsing
   app.use(express.json({ limit: '10mb' }));
