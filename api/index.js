@@ -4,48 +4,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
 
-// Inline configuration to avoid missing build/config.js in Vercel
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-const corsOptions = isDevelopment
-  ? {
-      origin: [
-        'http://localhost:3000',
-        'http://localhost:3500',
-        'https://localhost:3000',
-        'https://localhost:3500',
-      ],
-      credentials: true,
-      optionsSuccessStatus: 200,
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'x-api-key',
-        'anthropic-version',
-      ],
-    }
-  : {
-      origin: ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'],
-      credentials: true,
-      optionsSuccessStatus: 200,
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'x-api-key',
-        'anthropic-version',
-      ],
-    };
-
-const allowedOrigins = isDevelopment
-  ? [
-      'http://localhost:3000',
-      'http://localhost:3500',
-      'https://localhost:3000',
-      'https://localhost:3500',
-    ]
-  : ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'];
+// Import shared configuration - SINGLE SOURCE OF TRUTH
+import {
+  isDevelopment,
+  corsOptions,
+  allowedOrigins,
+} from '../shared-config.js';
 
 console.log(`🔧 Environment: ${isDevelopment ? 'Development' : 'Production'}`);
 console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
@@ -160,6 +124,9 @@ function loadClaudeApiKey() {
 function createApp() {
   const app = express();
 
+  // Apply CORS middleware FIRST before any other middleware or routes
+  app.use(cors(corsOptions));
+
   // Add error handler for JSON parsing
   app.use(express.json({ limit: '10mb' }));
 
@@ -171,9 +138,6 @@ function createApp() {
     }
     next();
   });
-
-  // Use shared CORS configuration (dev mode only)
-  app.use(cors(corsOptions));
 
   // Serve static files - try multiple possible locations
   const possibleStaticPaths = [
@@ -638,37 +602,8 @@ STRICTLY FORBIDDEN: "Based on", "According to", "The information shows", "From w
     }
   }
 
-  // Handle preflight requests for chat API
-  app.options('/api/chat', (req, res) => {
-    res.header(
-      'Access-Control-Allow-Origin',
-      req.headers.origin && allowedOrigins.includes(req.headers.origin)
-        ? req.headers.origin
-        : allowedOrigins[0]
-    );
-    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, x-api-key, anthropic-version'
-    );
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(200);
-  });
-
   // Claude chat endpoint
   app.post('/api/chat', async (req, res) => {
-    // Set CORS headers explicitly for chat endpoint
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.header('Access-Control-Allow-Origin', origin);
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-      res.header(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, x-api-key, anthropic-version'
-      );
-    }
-
     await handleChatRequest(req, res);
   });
 
