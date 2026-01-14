@@ -727,24 +727,5 @@ try {
   });
 }
 
-// Vercel serverless function handler wrapper
-export default function handler(req, res) {
-  // Handle OPTIONS preflight at Vercel function level (before Express)
-  if (req.method === 'OPTIONS') {
-    const origin = req.headers.origin;
-    console.log(`🔄 Vercel-level OPTIONS preflight from: ${origin}`);
-
-    // Set CORS headers for preflight
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, x-api-key, anthropic-version'
-    );
-    return res.status(200).end();
-  }
-
-  // Pass all other requests to Express
-  return app(req, res);
-}
+// Export for Vercel serverless function
+export default app;
