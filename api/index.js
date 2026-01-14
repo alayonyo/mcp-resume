@@ -4,12 +4,51 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
 
-// Import shared configuration - SINGLE SOURCE OF TRUTH
-import {
-  isDevelopment,
-  corsOptions,
-  allowedOrigins,
-} from '../shared-config.js';
+// Inline configuration for Vercel serverless deployment
+// Note: This is duplicated from shared-config.js to ensure it works in Vercel's environment
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const corsOptions = isDevelopment
+  ? {
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3500',
+        'http://localhost:8080',
+        'https://localhost:3000',
+        'https://localhost:3500',
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-api-key',
+        'anthropic-version',
+      ],
+    }
+  : {
+      origin: ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-api-key',
+        'anthropic-version',
+      ],
+    };
+
+const allowedOrigins = isDevelopment
+  ? [
+      'http://localhost:3000',
+      'http://localhost:3500',
+      'http://localhost:8080',
+      'https://localhost:3000',
+      'https://localhost:3500',
+    ]
+  : ['https://yonatan-ayalon.com', 'https://www.yonatan-ayalon.com'];
 
 console.log(`🔧 Environment: ${isDevelopment ? 'Development' : 'Production'}`);
 console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
