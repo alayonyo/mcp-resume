@@ -127,6 +127,27 @@ function createApp() {
   // Apply CORS middleware FIRST before any other middleware or routes
   app.use(cors(corsOptions));
 
+  // Additional CORS handling for Vercel serverless functions
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, x-api-key, anthropic-version'
+      );
+    }
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    next();
+  });
+
   // Add error handler for JSON parsing
   app.use(express.json({ limit: '10mb' }));
 
